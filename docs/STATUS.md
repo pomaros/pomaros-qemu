@@ -64,3 +64,13 @@ from these tests. All runs use private scratch profiles and normal windows.
 
 The QMP supervisor's broken-pipe cleanup path has a regression test; a host
 abort now yields a final failure verdict and cleans up the app's error dialog.
+
+The follow-up capture proves the opcode directly from mapped guest RAM:
+`0xb8404d69` at guest PC `0x538604f0` is `ldr w9, [x11, #4]!`, with guest x11
+and x26 both `0x8000014000`. Successful owning-thread Hypervisor register reads
+and the MMIO trace establish this scalar writeback access. Evidence:
+`artifacts/desktop-hvf-opcode/`. A targeted core correction is pending.
+
+The production app now requires the quiet `desktop` firmware policy; diagnostic
+`forever` packages are refused. This is tested in host admission but needs fresh
+qualification with the matching common-core quiet hook.

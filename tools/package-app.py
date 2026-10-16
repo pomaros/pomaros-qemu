@@ -18,7 +18,7 @@ def lock(path):
 
 def validate_guest(manifest, startup):
     if not (manifest.get('backend') == 'qemu' and manifest.get('profile') == 'wanderer'
-            and manifest.get('desktop_session') == 'forever'
+            and manifest.get('desktop_session') == 'desktop'
             and all(manifest.get(k) for k in ('work_volume', 'usb_desktop', 'virtio_gpu', 'network_stack'))):
         raise ValueError('requires a QEMU persistent USB/GPU/network desktop package')
     if any(manifest.get(k) for k in ('host_services', 'vsock_device', 'work_probe', 'shutdown_probe',

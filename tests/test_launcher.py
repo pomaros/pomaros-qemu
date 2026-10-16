@@ -90,9 +90,11 @@ class Packaging(unittest.TestCase):
     def test_rejects_host_bridge_and_probes(self):
         spec = importlib.util.spec_from_file_location('package_app', ROOT / 'tools/package-app.py')
         module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-        valid = dict(backend='qemu', profile='wanderer', desktop_session='forever',
+        valid = dict(backend='qemu', profile='wanderer', desktop_session='desktop',
                      work_volume=True, usb_desktop=True, virtio_gpu=True, network_stack=True)
         module.validate_guest(valid, 'SYS:VMUSB\n')
+        with self.assertRaises(ValueError):
+            module.validate_guest(dict(valid, desktop_session='forever'), 'SYS:VMUSB\n')
         for key in ('host_services', 'vsock_device', 'shutdown_probe', 'input_probe'):
             with self.assertRaises(ValueError):
                 module.validate_guest(dict(valid, **{key: True}), 'SYS:VMUSB\n')
