@@ -30,12 +30,15 @@ class Launcher(unittest.TestCase):
             '--profile', str(self.profile), '--inspect', *extra], capture_output=True, text=True, timeout=10)
 
     def test_preserves_disk_and_quotes_paths(self):
+        (self.resources / 'System.img').chmod(0o400)
         first = self.run_launcher()
         self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertEqual((self.profile / 'system.img').stat().st_mode & 0o777, 0o600)
         command = json.loads(first.stdout)
         block = json.loads(command['arguments'][command['arguments'].index('-blockdev') + 1])
         self.assertEqual(block['file']['filename'], str(self.profile / 'system.img'))
         (self.profile / 'system.img').write_bytes(b'personal data')
+        (self.resources / 'System.img').chmod(0o600)
         (self.resources / 'System.img').write_bytes(b'new seed')
         self.assertEqual(self.run_launcher().returncode, 0)
         self.assertEqual((self.profile / 'system.img').read_bytes(), b'personal data')

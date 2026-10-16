@@ -96,6 +96,7 @@ func run(_ options: Options) throws -> Int32 {
         let temporary = options.profile.appendingPathComponent(".seed-" + UUID().uuidString)
         defer { try? fm.removeItem(at: temporary) }
         try fm.copyItem(at: seed, to: temporary)
+        try fm.setAttributes([.posixPermissions: 0o600], ofItemAtPath: temporary.path)
         try fm.moveItem(at: temporary, to: disk)
     }
     try regular(disk)
