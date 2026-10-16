@@ -8,9 +8,10 @@ repository contains the Mac launcher and packaging only.
 
 ![PomAROS QEMU guest desktop in a windowed HVF session](docs/images/pomaros-qemu.png)
 
-Actual guest viewport captured through QMP from the windowed application on
-2026-10-16. The full desktop passes bounded HVF/GPU/USB-binding checks; this is
-a development package with the shutdown limits below. See
+Actual public-core guest viewport captured unchanged through QMP from a
+windowed HVF run. The public UP monitor displays clock and CPU rows; clock
+accuracy and sensors are not qualified. Bounded desktop/GPU/USB-binding checks
+pass; this development package retains the shutdown limits below. See
 [status and evidence](docs/STATUS.md).
 
 ## Run

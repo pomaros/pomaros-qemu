@@ -1,8 +1,24 @@
 # Qualification status
 
-PomAROS QEMU builds and starts its full AROS desktop in a normal macOS Cocoa window using QEMU 11/HVF. The archived qualification below used core pin `9f346ab00d644bd40e0f53e2624c3f625d28f182` and the pinned VM tooling; the public-source migration is recorded separately. QEMU remains an external installation. Ordinary development builds use ad-hoc signing; the separately prepared internal DMG uses Developer ID signing and Apple notarization.
+## Public-source qualification
 
-## Verified on 2026-10-16
+`CORE.lock` pins public `pomaros/aros-core` revision `89db046157d415e98c05ca18316ca7ae63b07023`, shared with Hosted and VM. `TOOLS.lock` pins the reviewed VM tooling at `9bdd8d268bbb01e476542e4c8e835c340c90b5ad`. The final source was actually configured and rebuilt with frozen LLVM 20.1.0, UTC and retained release epoch `1792178266`. Boot, Wanderer and the full canonical distribution graph pass; all 44 required files exist. The package excludes VZ-only host-service commands and all eight physical Apple peripheral modules.
+
+The actual windowed HVF desktop run passes in 20.21 seconds. QMP register/status access, the LLDB assertion supervisor and HVF abort tracing are ready before the guest runs. Desktop stability, two HID bindings and GPU completion markers pass. Its first unaltered capture passes all 352 configured-wallpaper blocks and the strict public monitor geometry/glyph/palette/blank-row contract. Negative controls reject alerts inside and outside the widget, over its removed and retained labels, generic requesters, software alerts and missing wallpaper. The seed is unchanged and QEMU exits normally; guest flushing is not established.
+
+The accepted screenshot SHA-256 is `11e083af953d92ef2b8556f83d0de95dfccc85deec1d372b0642414fa0e48dfe`; it is copied unchanged into the README. It shows both project URLs and the limited public UP monitor. Clock accuracy, sensor values, actual input-event delivery, outbound networking and persistent safe shutdown remain unqualified. Evidence: `artifacts/desktop-hvf-public-up-final-89db/`.
+
+The preceding runtime keeps its original FAIL verdict in `artifacts/desktop-hvf-public-89db/`: its pixel gate expected the removed native keyboard-backlight row. An independently reviewed profile replaces that expectation with a strict background row and retains the exact CORES/CPU masks; offline positive and negative controls passed on all three retained frames before the single new runtime. No core code or old verdict was changed to obtain the new result.
+
+The final VM and QEMU packages have byte-identical kernel ELF, Exec library and raw bootstrap; only their backend startup ramdisks differ. The kernel ELF SHA-256 is `22fed8070a01bf5b52da8eb9240c309587747283ea0f81fee5fd00a418189d19`. Proof: the VM repository's local `artifacts/public-core-89db046/shared-kernel-proof.json`.
+
+The tested app retains actual product revision `e9035fb`, packaging-tool revision `5896047` and guest revision `89db046`. The runtime verdict separately records the reviewed checker/tool revision `9bdd8d2`; documentation commits do not rewrite app provenance. These fresh development applications have ad-hoc signatures. Earlier notarized DMGs below remain sealed and unchanged.
+
+## Archived image and earlier evidence
+
+The earlier PomAROS QEMU development image builds and starts its full AROS desktop in a normal macOS Cocoa window using QEMU 11/HVF. The archived qualification below used core pin `9f346ab00d644bd40e0f53e2624c3f625d28f182` and the pinned VM tooling; the public-source migration is recorded separately. QEMU remains an external installation. Ordinary development builds use ad-hoc signing; the separately prepared internal DMG uses Developer ID signing and Apple notarization.
+
+## Archived development qualification
 
 The complete fresh guest SDK distribution graph passes, with all required files present. The QEMU package contains 3863 runtime files, its EFI loader, guest disk, firmware and license notices. It uses frozen LLVM 20.1.0 and release epoch `1792169063`/UTC. Actual guest objects were built at `48e445615380448d74ec02c9958a71201ce4904c`; later common changes add a hosted-only loader correction, extract the unchanged monitor renderer and add a Darwin-only monitor utility. Standalone loader tokens and the entire guest coldstart translation unit retain identical preprocessed code. Qualified artifacts and runs retain their original `3c382bc` source metadata; this pin update does not relabel those runs or rebuild unchanged guest objects.
 
@@ -10,7 +26,7 @@ Nine host tests pass, covering disk preservation, unusual paths, profile locking
 
 The actual final windowed HVF run passes in 33.49 seconds. Independent QMP status/register access, an owned-process LLDB assertion supervisor and HVF abort tracing are ready before guest execution. Guest markers establish desktop stability, two USB HID bindings and graphics IRQ completion. The unmodified guest framebuffer passes the strict production classifier: 352 blocks match the configured wallpaper extracted from the immutable package, and the monitor matches its frame, static glyphs and blank rows. Negative controls reject black/blue alerts inside and outside the monitor, alerts over its labels, generic requesters, software alerts and a missing wallpaper.
 
-The accepted first candidate has SHA-256 `198ef072f943b815c47539c95fc3eabf8d5d7e2a8e1297aa694852915e006cea`. It is copied unchanged to `docs/images/pomaros-qemu.png` and embedded in the README. The image is the actual guest viewport from a windowed Cocoa run, without simulated macOS chrome. Both project URLs are visible. Local evidence: `artifacts/desktop-hvf-final-3c-accepted/`. Earlier failed runs and incomplete redraw candidates retain their original verdicts and pixels.
+The accepted first candidate has SHA-256 `198ef072f943b815c47539c95fc3eabf8d5d7e2a8e1297aa694852915e006cea`. That earlier capture remains in its local run artifacts; the README displays the separately qualified public-source capture above. The image is the actual guest viewport from a windowed Cocoa run, without simulated macOS chrome. Both project URLs are visible. Local evidence: `artifacts/desktop-hvf-final-3c-accepted/`. Earlier failed runs and incomplete redraw candidates retain their original verdicts and pixels.
 
 Guest logs also show a DHCP lease applied to vn0, with QEMU's NAT gateway and DNS configuration. Outbound DNS/TCP connectivity is not qualified by this desktop test. QEMU exits normally through the supervisor and the immutable seed remains unchanged; this does not establish guest filesystem flushing.
 
@@ -40,6 +56,4 @@ These are internal development artifacts for John. No public binary download or 
 
 ## Public-source migration
 
-`CORE.lock` selects public `pomaros/aros-core` revision `89db046157d415e98c05ca18316ca7ae63b07023`, branch `main`. Fresh-source build and runtime acceptance are recorded separately from the archived binaries below. The initial compile preflight built the boot and Wanderer graphs and passed a strict 20-resident windowed QEMU/HVF headless startup. Its full distribution attempt exposed a removed native updater dependency; the final public source replaces that UI backend with an explicit unavailable-target status. Final-source configuration and canonical rebuild are in progress; full desktop acceptance is pending.
-
-Future builds acquire the curated official-history `pomaros/aros-core` fork through `CORE.lock` into the separate `../aros-core` checkout. The VM boot manifests exclude physical Apple PMGR, DART, RTKit, SPMI, SMC, PCIe, NVMe and SPI-HID drivers. `appleboot.device` remains because it supplies the VM RAM-backed system volume. The source acquisition and native-module admission checks do not establish a successful new guest build or boot. The runtime evidence above belongs to the unchanged archived artifacts.
+Builds acquire the curated official-history `pomaros/aros-core` fork through `CORE.lock` into the separate `../aros-core` checkout. The VM boot manifests exclude physical Apple PMGR, DART, RTKit, SPMI, SMC, PCIe, NVMe and SPI-HID drivers. `appleboot.device` remains because it supplies the VM RAM-backed system volume. The source acquisition and native-module admission checks do not establish a successful new guest build or boot. The archived runtime evidence above belongs to the unchanged earlier artifacts.
