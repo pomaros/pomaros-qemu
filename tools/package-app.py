@@ -37,6 +37,8 @@ def main():
     a = p.parse_args()
     if a.output.exists() or a.output.suffix != '.app':
         p.error('output must be a new .app directory')
+    if subprocess.check_output(['git', '-C', str(ROOT), 'status', '--porcelain'], text=True):
+        p.error('commit product source before recording application provenance')
     tools_lock = lock(ROOT / 'TOOLS.lock')
     actual = subprocess.check_output(['git', '-C', str(a.tools), 'rev-parse', 'HEAD'], text=True).strip()
     expected = subprocess.check_output(['git', '-C', str(a.tools), 'rev-parse', tools_lock['TOOLS_REVISION']], text=True).strip()
@@ -86,6 +88,8 @@ def main():
                   for p in resources.rglob('*') if p.is_file()}
         (resources / 'provenance.json').write_text(json.dumps({'guest': guest, 'tools_revision': actual,
             'qemu_version': version, 'qemu_path': str(qemu), 'qemu_bundled': False,
+            'launcher_sha256': hashlib.sha256(launcher.read_bytes()).hexdigest(),
+            'qemu_sha256': hashlib.sha256(qemu.read_bytes()).hexdigest(),
             'source_revision': subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip(),
             'files': hashes}, indent=2) + '\n')
         subprocess.run(['codesign', '--force', '--sign', '-', '--entitlements', str(ROOT / 'entitlements.plist'), str(a.output)], check=True)

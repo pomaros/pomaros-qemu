@@ -57,7 +57,7 @@ class Launcher(unittest.TestCase):
         (self.profile / 'system.img').symlink_to(outside)
         self.assertNotEqual(self.run_launcher().returncode, 0)
         self.assertEqual(outside.read_bytes(), b'untouched')
-        (self.profile / 'system.img').unlink(); self.profile.rmdir() if not list(self.profile.iterdir()) else None
+        (self.profile / 'system.img').unlink()
         # A separate profile symlink may never receive personal data.
         other = self.root / 'other'; other.mkdir()
         link = self.root / 'link'; link.symlink_to(other)
