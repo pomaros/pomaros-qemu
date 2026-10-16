@@ -50,6 +50,7 @@ def main():
     p.add_argument('--tools', type=Path, default=ROOT.parent / 'pomaros-vm')
     p.add_argument('--accel', choices=('hvf', 'tcg'), default='hvf')
     p.add_argument('--timeout', type=float, default=60)
+    p.add_argument('--core-lock',type=Path,default=ROOT/'CORE.lock',help='actual packaged guest pin for a retained signed distribution')
     p.add_argument('--lldb', action='store_true', help='attach an assertion debugger before the paused guest runs')
     a = p.parse_args(); a.output = a.output.resolve(); a.app = a.app.resolve()
     if a.output.exists() or not 5 <= a.timeout <= 180:
@@ -62,7 +63,7 @@ def main():
         p.error('pixel gate checkout differs from TOOLS.lock')
     manifest = json.loads((resources / 'provenance.json').read_text())
     guest = manifest['guest']
-    lock = dict(line.split('=', 1) for line in (ROOT / 'CORE.lock').read_text().splitlines()
+    lock = dict(line.split('=', 1) for line in a.core_lock.read_text().splitlines()
                 if line and not line.startswith('#'))
     if guest['source_revision'] != lock['CORE_REVISION']:
         p.error('application core differs from CORE.lock')
@@ -75,6 +76,7 @@ def main():
                'seed_sha256': hashlib.sha256(seed.read_bytes()).hexdigest(),
                'scope': 'windowed desktop/GPU/USB bindings; network, file persistence and safe shutdown not qualified',
                'supervisor_ready_before_guest': False}
+    verdict['core_lock_sha256']=hashlib.sha256(a.core_lock.read_bytes()).hexdigest()
     process = None; qmp = None; debugger = None; debugger_log = None; started = time.monotonic()
     with tempfile.TemporaryDirectory(prefix='pq-', dir='/tmp') as scratch:
         endpoint = Path(scratch) / 'qmp.sock'
