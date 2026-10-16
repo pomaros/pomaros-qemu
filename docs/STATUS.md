@@ -6,8 +6,8 @@ vsock host service provider, host clipboard/file bridge or guest flush/quit
 transport. The application requires an installed QEMU 11.
 
 The product pins shared source candidate `b027ee4ecd` in `CORE.lock`; guest
-package/desktop acceptance is pending that common build. Earlier VM audit failures (QuickPart UUID
-header and ELF loader crash) are separate unresolved work. No full desktop,
+full guest distribution builds and packages successfully; desktop acceptance is
+tracked below. The former QuickPart UUID build failure is corrected. No full desktop,
 network, persistent filesystem or shutdown stability is established by this
 repository's host tests. Physical Apple/Raspberry Pi behavior is not tested.
 
@@ -41,5 +41,26 @@ bundle SHA-256 is identical (`6abba4b73af8c513404ff88b633498c39b2db630e3f9bbb207
 The QEMU run qualifies independent QMP register access before guest execution.
 Evidence is retained in the VM tooling repository's ignored
 `artifacts/common-core-regression.json`. This establishes the common guest core
-on both engines; the complete desktop application and product acceptance remain
-pending full distribution inputs.
+on both engines. The fresh complete desktop application packages with 3863
+runtime files, EFI, required firmware and license materials.
+
+## Fresh desktop evidence
+
+The first normal-window HVF run aborts QEMU 11.0.1 inside its MMIO handler at
+`assert(isv)` after xHCI instantiation. A deliberate LLDB reproduction proves
+paused QMP access before execution, then captures guest PC `0x538604f0` with
+`hv_vcpu_get_reg` returning success on the CPU's owning thread. The final trace
+is a read at VA/IPA `0x8000014004` with ISV=0. The exact guest instruction is
+under source diagnosis; it is not inferred from the host assertion alone.
+Crash report, exact binary hash, backtrace and MMIO trace are retained in
+`artifacts/desktop-hvf/` and `artifacts/desktop-hvf-lldb/`.
+
+One explicit TCG comparison reaches stable desktop, two USB bindings and GPU
+IRQ completion. Its screenshot shows Wanderer, Shell and the existing debug
+statistics window. The strict pixel heuristic rejects that geometry, so its
+overall verdict is FAIL rather than accepted desktop functionality. Evidence:
+`artifacts/desktop-tcg/`. No network or persistent shutdown acceptance follows
+from these tests. All runs use private scratch profiles and normal windows.
+
+The QMP supervisor's broken-pipe cleanup path has a regression test; a host
+abort now yields a final failure verdict and cleans up the app's error dialog.
