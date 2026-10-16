@@ -1,10 +1,10 @@
 # Qualification status
 
-PomAROS QEMU builds and starts its full AROS desktop in a normal macOS Cocoa window using QEMU 11/HVF. It shares core pin `3c382bcf39373ac50630f5df6e961a3afb05a64b` and the pinned VM tooling with PomAROS VM. QEMU remains an external installation; the application is signed ad-hoc.
+PomAROS QEMU builds and starts its full AROS desktop in a normal macOS Cocoa window using QEMU 11/HVF. It shares core pin `4613340d3f1932b156420d86e3074372e5d15501` and the pinned VM tooling with PomAROS VM. QEMU remains an external installation; the application is signed ad-hoc.
 
 ## Verified on 2026-10-16
 
-The complete fresh guest SDK distribution graph passes, with all required files present. The QEMU package contains 3863 runtime files, its EFI loader, guest disk, firmware and license notices. It uses frozen LLVM 20.1.0 and release epoch `1792169063`/UTC. Actual guest objects were built at `48e445615380448d74ec02c9958a71201ce4904c`; the final common pin adds a hosted-only loader correction. Standalone preprocessed loader tokens match exactly and retained source-amendment metadata records the unchanged guest artifacts.
+The complete fresh guest SDK distribution graph passes, with all required files present. The QEMU package contains 3863 runtime files, its EFI loader, guest disk, firmware and license notices. It uses frozen LLVM 20.1.0 and release epoch `1792169063`/UTC. Actual guest objects were built at `48e445615380448d74ec02c9958a71201ce4904c`; later common changes add a hosted-only loader correction, extract the unchanged monitor renderer and add a Darwin-only monitor utility. Standalone loader tokens and the entire guest coldstart translation unit retain identical preprocessed code. Qualified artifacts and runs retain their original `3c382bc` source metadata; this pin update does not relabel those runs or rebuild unchanged guest objects.
 
 Nine host tests pass, covering disk preservation, unusual paths, profile locking, symlink rejection, explicit acceleration, QMP endpoints, missing dependencies and desktop admission. A paused construction test admits the full device set under TCG; it executes no guest code and does not qualify a TCG desktop.
 
@@ -24,4 +24,4 @@ The macOS launcher uses Apple's ABI; the guest leaves x18 unrestricted. Only hos
 
 There is no guest-quiesce/host-quit transport for this backend. A QMP quit, normal process exit or window close can interrupt cached guest writes. This is a development package, not a release qualified for personal persistent data. The required shutdown path is tracked in [TODO.md](../TODO.md).
 
-Host clipboard/file services are unavailable. Actual keyboard/pointer event delivery, outbound networking, persistent write/readback across controlled restarts, audio, long-term stability and production SMP remain unqualified. There is no claim of host-bridge parity with PomAROS VM or Hosted. Tests use isolated profiles and never open a personal disk. No public upstream publication or visibility change was performed; the native repository remains empty and private.
+Host clipboard/file services are unavailable. Actual keyboard/pointer event delivery, outbound networking, persistent write/readback across controlled restarts, audio, long-term stability and production SMP remain unqualified. There is no claim of host-bridge parity with PomAROS VM or Hosted. Tests use isolated profiles and never open a personal disk. Product repositories remain private; the native repository remains empty and private.
