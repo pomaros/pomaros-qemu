@@ -20,7 +20,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--source', type=Path, default=ROOT.parent / 'aros-core-pomaros')
     p.add_argument('--tools', type=Path, default=ROOT.parent / 'pomaros-vm')
-    p.add_argument('--build', type=Path, default=ROOT.parent / 'Build/pomaros-vm/clean-core')
+    p.add_argument('--build', type=Path, default=ROOT.parent / 'Build/pomaros-qemu/clean-core')
     p.add_argument('--output', type=Path, default=ROOT / 'artifacts/distribution')
     p.add_argument('--jobs', type=int, default=6)
     a = p.parse_args()

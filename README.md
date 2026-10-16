@@ -66,7 +66,9 @@ make test
 python3 tools/build.py
 ```
 
-The build creates an isolated VM configuration, builds the common AROS runtime,
+The build uses its own `../Build/pomaros-qemu/clean-core` directory so simultaneous
+VM and QEMU product builds cannot race a shared mutable build tree. It creates
+an isolated VM configuration, builds the common AROS runtime,
 packages the QEMU backend and signs a local app. It stops on missing modules or
 wrong source identities. Build or guest failures are retained as failures.
 
