@@ -2,8 +2,8 @@
 
 AROS ARM64 on Apple Silicon Macs using QEMU and hardware acceleration (HVF).
 This product shares the common PomAROS source revision with hosted and Apple
-Virtualization.framework products. VM guest x18 remains unrestricted. Native
-Apple/Raspberry Pi target work belongs to that shared kernel source; this
+Virtualization.framework products. Native Apple/Raspberry Pi target work
+belongs to that shared kernel source; this
 repository contains the Mac launcher and packaging only.
 
 The product is being prepared; a host build alone is not guest qualification.
@@ -103,3 +103,10 @@ With `--lldb`, it attaches to the owned QEMU child before execution and captures
 the guest instruction through Hypervisor registers and physical memory if QEMU
 asserts. Attach failure prevents guest execution. Its verdict excludes network, guest filesystem persistence and safe shutdown;
 those require separate acceptance. All runs use disposable profile copies.
+
+## Register policy
+
+The AROS guest can use the AArch64 x18 register normally. Hosted AROS reserves
+it because it calls macOS directly; the macOS launcher follows Apple's ABI.
+Native Apple and future Raspberry Pi builds follow the guest register policy
+from the same kernel source.
