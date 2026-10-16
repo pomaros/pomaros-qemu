@@ -1,6 +1,6 @@
 # Qualification status
 
-PomAROS QEMU builds and starts its full AROS desktop in a normal macOS Cocoa window using QEMU 11/HVF. It shares core pin `4613340d3f1932b156420d86e3074372e5d15501` and the pinned VM tooling with PomAROS VM. QEMU remains an external installation; the application is signed ad-hoc.
+PomAROS QEMU builds and starts its full AROS desktop in a normal macOS Cocoa window using QEMU 11/HVF. It shares core pin `9f346ab00d644bd40e0f53e2624c3f625d28f182` and the pinned VM tooling with PomAROS VM. QEMU remains an external installation. Ordinary development builds use ad-hoc signing; the separately prepared internal DMG uses Developer ID signing and Apple notarization.
 
 ## Verified on 2026-10-16
 
@@ -14,6 +14,8 @@ The accepted first candidate has SHA-256 `198ef072f943b815c47539c95fc3eabf8d5d7e
 
 Guest logs also show a DHCP lease applied to vn0, with QEMU's NAT gateway and DNS configuration. Outbound DNS/TCP connectivity is not qualified by this desktop test. QEMU exits normally through the supervisor and the immutable seed remains unchanged; this does not establish guest filesystem flushing.
 
+The final source pin also maps macOS EPERM to AROS write protection in the Unix hosted filesystem handler, with a production-code read-only fixture and a negative control. This hosted-only correction changes no standalone guest code. Source equivalence was rechecked; the sealed guest distributions below keep their original 3c/48e provenance and were not rebuilt or re-signed for it.
+
 ## Shared kernel
 
 Actual final VZ and QEMU bundle payloads are independently parsed and hash-checked. Their `kernel.resource` and `exec.library` ELF files and raw stage2 bootstrap are byte-identical. Only the `SYS` ramdisk differs, reflecting backend startup and host-service settings. The kernel ELF SHA-256 is `646c209ca0cc241d7286522df40f7cafbbcf334a20c8d6574e8d45d7463438a7`. Proof is retained in the VM tooling repository's local `artifacts/pomaros-migration/final-3c-shared-kernel-proof.json`.
@@ -24,4 +26,14 @@ The macOS launcher uses Apple's ABI; the guest leaves x18 unrestricted. Only hos
 
 There is no guest-quiesce/host-quit transport for this backend. A QMP quit, normal process exit or window close can interrupt cached guest writes. This is a development package, not a release qualified for personal persistent data. The required shutdown path is tracked in [TODO.md](../TODO.md).
 
-Host clipboard/file services are unavailable. Actual keyboard/pointer event delivery, outbound networking, persistent write/readback across controlled restarts, audio, long-term stability and production SMP remain unqualified. There is no claim of host-bridge parity with PomAROS VM or Hosted. Tests use isolated profiles and never open a personal disk. Product repositories remain private; the native repository remains empty and private.
+Host clipboard/file services are unavailable. Actual keyboard/pointer event delivery, outbound networking, persistent write/readback across controlled restarts, audio, long-term stability and production SMP remain unqualified. There is no claim of host-bridge parity with PomAROS VM or Hosted. Tests use isolated profiles and never open a personal disk. Product repositories are public; the shared AROS core remains private and the native repository remains empty and private.
+
+## Signed internal distribution
+
+The exact Developer ID signed launcher passes a separate 106.77-second supervised windowed HVF qualification, including strict wallpaper/widget checks and negative controls. The immutable seed is unchanged. Normal QEMU exit still does not establish guest filesystem flushing.
+
+`PomAROS-QEMU-0.1.0-development-arm64.dmg` is signed by Developer ID Application: John Knipper (C43N3NG7Z5), with hardened runtime and a secure timestamp. Apple accepted the application ZIP (`aecd9255-9b27-4b99-857b-dfa714a16d17`) and final DMG (`b5b4e979-d210-49ff-9630-4f2df181a321`). The app was stapled before building the DMG; the final image is also stapled. Both signatures, Apple tickets and Gatekeeper checks pass.
+
+Final post-staple DMG SHA-256: `b8b6efc15ce2fbf4ec97a850ddb5e599e34447d25bd71d903f144cb12a89b21c`. Local runtime and submission evidence lives under `artifacts/release-20261016-*` and `artifacts/notary-20261016-*`. See [SIGNED-DISTRIBUTION.md](SIGNED-DISTRIBUTION.md) for the reproducible signing and verification procedure.
+
+These are internal development artifacts for John. No public binary download or GitHub Release was uploaded. Public launcher/tool repositories and private corresponding core sources are distinct; recipients need appropriate access to the corresponding APL/GPL/LGPL and other component sources before redistribution.

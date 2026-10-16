@@ -62,8 +62,9 @@ Requirements: Apple Silicon macOS, Xcode command-line tools, Python 3, GNU make
 cross toolchain in `../aros-crosstools`.
 
 `CORE.lock` pins the common AROS source and `TOOLS.lock` pins the shared build
-and packaging implementation from `pomaros-vm`. Fetch those private repositories
-into sibling checkouts and select the exact revisions before building. AROS
+and packaging implementation from `pomaros-vm`. Fetch the repositories into
+sibling checkouts (the shared core requires private access) and select the
+exact revisions before building. AROS
 source uses APL; our launcher/tool code uses MIT. QEMU is installed separately;
 firmware and guest license notices accompany the application.
 
