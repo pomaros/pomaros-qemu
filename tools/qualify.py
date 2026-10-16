@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shutil
 import socket
 import subprocess
 import tempfile
@@ -152,19 +153,31 @@ def main():
                         if time.monotonic() - stable_since >= 3: break
                     time.sleep(.1)
                 else: raise RuntimeError('desktop-proof-timeout')
-                qmp.execute('screendump', {'filename': str(a.output / 'desktop.png'), 'format': 'png', 'device': 'gpu', 'head': 0})
                 wallpaper_path='Prefs/Presets/Wallpapers/2007-comp-entries/02-d980_aros-rose.jpg'
                 wallpaper=a.output/'configured-wallpaper.jpg'
                 wallpaper_hash=guest['distribution_files'][wallpaper_path]['sha256']
                 mtools_environment=dict(os.environ); mtools_environment.pop('MTOOLS_SKIP_CHECK',None)
                 subprocess.run(['mcopy','-i',str(seed)+'@@67108864','::System/'+wallpaper_path,str(wallpaper)],check=True,env=mtools_environment)
                 verdict['wallpaper_reference_sha256']=wallpaper_hash
-                result = subprocess.run(['python3', str(a.tools / 'tests/check-aros-render-frame.py'),
-                                         '--profile', 'wanderer-wallpaper', '--wallpaper', str(wallpaper), '--wallpaper-sha256',wallpaper_hash,
-                                         '--serial-log', str(profile / 'serial.log'), str(a.output / 'desktop.png')],
-                                        capture_output=True, text=True)
-                (a.output / 'pixels.log').write_text(result.stdout + result.stderr)
-                if result.returncode: raise RuntimeError('desktop-pixel-gate-failed')
+                verdict['frame_candidates']=[]
+                for attempt in range(3):
+                    # Guest redraws are not atomic. Retain incomplete captures;
+                    # never weaken the complete widget/alert geometry contract.
+                    frame=a.output/('desktop-candidate-'+str(attempt+1)+'.png')
+                    qmp.execute('screendump', {'filename': str(frame), 'format': 'png', 'device': 'gpu', 'head': 0})
+                    shutil.copyfile(frame,a.output/'desktop.png')
+                    result = subprocess.run(['python3', str(a.tools / 'tests/check-aros-render-frame.py'),
+                                             '--profile', 'wanderer-wallpaper', '--wallpaper', str(wallpaper), '--wallpaper-sha256',wallpaper_hash,
+                                             '--serial-log', str(profile / 'serial.log'), str(frame)],capture_output=True,text=True)
+                    message=result.stdout+result.stderr
+                    (a.output/('pixels-candidate-'+str(attempt+1)+'.log')).write_text(message)
+                    (a.output/'pixels.log').write_text(message)
+                    verdict['frame_candidates'].append({'file':frame.name,'sha256':hashlib.sha256(frame.read_bytes()).hexdigest(),'accepted':result.returncode==0})
+                    if result.returncode==0:break
+                    incomplete=any(reason in message for reason in ('monitor widget static glyph contract differs','monitor widget frame contract differs'))
+                    if not incomplete or attempt==2:raise RuntimeError('desktop-pixel-gate-failed')
+                    if any(marker in (profile/'serial.log').read_text(errors='replace') for marker in ('FAIL:','Synchronous Exception')):raise RuntimeError('guest-failure-between-captures')
+                    time.sleep(.37+attempt*.13)
                 rows = subprocess.check_output(['ps', '-axo', 'pid=,ppid=,comm='], text=True).splitlines()
                 children = [int(fields[0]) for row in rows if len(fields := row.split(None, 2)) == 3
                             and int(fields[1]) == process.pid and fields[2].endswith('/qemu-system-aarch64')]
