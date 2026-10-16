@@ -26,7 +26,7 @@ The macOS launcher uses Apple's ABI; the guest leaves x18 unrestricted. Only hos
 
 There is no guest-quiesce/host-quit transport for this backend. A QMP quit, normal process exit or window close can interrupt cached guest writes. This is a development package, not a release qualified for personal persistent data. The required shutdown path is tracked in [TODO.md](../TODO.md).
 
-Host clipboard/file services are unavailable. Actual keyboard/pointer event delivery, outbound networking, persistent write/readback across controlled restarts, audio, long-term stability and production SMP remain unqualified. There is no claim of host-bridge parity with PomAROS VM or Hosted. Tests use isolated profiles and never open a personal disk. Product repositories are public; the shared AROS core remains private and the native repository remains empty and private.
+Host clipboard/file services are unavailable. Actual keyboard/pointer event delivery, outbound networking, persistent write/readback across controlled restarts, audio, long-term stability and production SMP remain unqualified. There is no claim of host-bridge parity with PomAROS VM or Hosted. Tests use isolated profiles and never open a personal disk. Product repositories and the curated [AROS core](https://github.com/pomaros/aros-core) are public. Historical archived binaries still reference the private lineage; the native repository remains empty and private.
 
 ## Signed internal distribution
 
@@ -36,4 +36,8 @@ The exact Developer ID signed launcher passes a separate 106.77-second supervise
 
 Final post-staple DMG SHA-256: `b8b6efc15ce2fbf4ec97a850ddb5e599e34447d25bd71d903f144cb12a89b21c`. Local runtime and submission evidence lives under `artifacts/release-20261016-*` and `artifacts/notary-20261016-*`. See [SIGNED-DISTRIBUTION.md](SIGNED-DISTRIBUTION.md) for the reproducible signing and verification procedure.
 
-These are internal development artifacts for John. No public binary download or GitHub Release was uploaded. Public launcher/tool repositories and private corresponding core sources are distinct; recipients need appropriate access to the corresponding APL/GPL/LGPL and other component sources before redistribution.
+These are internal development artifacts for John. No public binary download or GitHub Release was uploaded. The new public curated source does not contain the historical private source commits identified by these archived binaries. Recipients of those binaries still need their exact corresponding APL/GPL/LGPL and other component sources before redistribution. A future public-source build must be qualified separately; no archived binary was relabeled.
+
+## Public-source migration
+
+Future builds acquire the curated official-history `pomaros/aros-core` fork through `CORE.lock` into the separate `../aros-core` checkout. The VM boot manifests exclude physical Apple PMGR, DART, RTKit, SPMI, SMC, PCIe, NVMe and SPI-HID drivers. `appleboot.device` remains because it supplies the VM RAM-backed system volume. The source acquisition and native-module admission checks do not establish a successful new guest build or boot. The runtime evidence above belongs to the unchanged archived artifacts.

@@ -18,11 +18,12 @@ def git(path, *args):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--source', type=Path, default=ROOT.parent / 'aros-core-pomaros')
+    p.add_argument('--source', type=Path, default=ROOT.parent / 'aros-core')
     p.add_argument('--tools', type=Path, default=ROOT.parent / 'pomaros-vm')
     p.add_argument('--build', type=Path, default=ROOT.parent / 'Build/pomaros-qemu/clean-core')
     p.add_argument('--output', type=Path, default=ROOT / 'artifacts/distribution')
     p.add_argument('--jobs', type=int, default=6)
+    p.add_argument('--toolchain', type=Path, default=ROOT.parent/'aros-crosstools')
     a = p.parse_args()
     for name in ('source', 'tools', 'build', 'output'):
         setattr(a, name, getattr(a, name).resolve())
@@ -36,7 +37,7 @@ def main():
     def run(*args):
         subprocess.run([str(x) for x in args], check=True, cwd=ROOT)
     if not a.build.exists():
-        run('python3', a.tools / 'tools/configure-core.py', '--source', a.source, '--output', a.build)
+        run('python3', a.tools / 'tools/configure-core.py', '--source', a.source, '--output', a.build, '--core-lock', ROOT / 'CORE.lock', '--toolchain', a.toolchain.resolve())
     build_identity = json.loads((a.build / 'vm-build-environment.json').read_text())
     if build_identity['source_revision'] != core['CORE_REVISION']:
         p.error('configured build has a different core revision; use a new build directory')

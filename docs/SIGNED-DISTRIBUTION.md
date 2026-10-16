@@ -19,3 +19,9 @@ This remains an internal development distribution. Guest-quiesce/host-quit,
 host clipboard/file services and full persistent-data acceptance are pending.
 The DMG includes those limits, prerequisites, actual guest provenance and
 license/source-access notices. No GitHub release upload is performed.
+
+For a retained historical payload, `prepare --guest-source-lock PATH` requires
+a lock containing its actual source URL, exact revision, branch and ABI. It
+refuses to replace the current public pin with an old private commit silently.
+Existing signed/notarized archives and their provenance are never modified by
+source acquisition or pin updates.

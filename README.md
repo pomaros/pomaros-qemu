@@ -63,8 +63,17 @@ cross toolchain in `../aros-crosstools`.
 
 `CORE.lock` pins the common AROS source and `TOOLS.lock` pins the shared build
 and packaging implementation from `pomaros-vm`. Fetch the repositories into
-sibling checkouts (the shared core requires private access) and select the
-exact revisions before building. AROS
+sibling checkouts at their exact public pins:
+
+```sh
+python3 tools/fetch-sources.py
+```
+
+The helper creates new detached source/tool checkouts or verifies existing
+clean pins; it never resets a working tree. The common core lives in `../aros-core`.
+Build its AROS LLVM toolchain separately using the
+[shared toolchain recipe](https://github.com/pomaros/pomaros-hosted/blob/main/GETTING-STARTED.md); the local
+`../aros-crosstools` prefix is a build prerequisite. AROS
 source uses APL; our launcher/tool code uses MIT. QEMU is installed separately;
 firmware and guest license notices accompany the application.
 
