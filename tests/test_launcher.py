@@ -44,6 +44,7 @@ class Launcher(unittest.TestCase):
         self.assertEqual((self.profile / 'system.img').read_bytes(), b'personal data')
         self.assertIn('virt-11.0,acpi=on,gic-version=3,msi=gicv2m', command['arguments'])
         self.assertIn('hvf', command['arguments'])
+        self.assertIn('cocoa,full-screen=off', command['arguments'])
 
     def test_profile_lock_is_exclusive(self):
         self.profile.mkdir()

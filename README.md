@@ -17,7 +17,9 @@ installation in this first package. The app records its exact QEMU path and
 refuses a different major version. A fully bundled/notarized installer is a
 subsequent distribution step.
 
-The Cocoa window provides the AROS display, keyboard and pointer. The default
+The application starts in a normal Cocoa window with fullscreen explicitly off.
+The user can choose fullscreen afterward. The window provides the AROS display,
+keyboard and pointer. The default
 profile is `~/Library/Application Support/PomAROS QEMU/Default/`. Its system disk
 is seeded once and remains writable; updates never overwrite that disk.
 Profiles are locked for the whole QEMU process lifetime. Two profiles can be

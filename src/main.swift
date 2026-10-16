@@ -118,7 +118,7 @@ func run(_ options: Options) throws -> Int32 {
                 "-device", "virtio-gpu-pci,id=gpu,xres=1024,yres=768",
                 "-device", "qemu-xhci,id=xhci", "-device", "usb-kbd,bus=xhci.0", "-device", "usb-tablet,bus=xhci.0",
                 "-netdev", "user,id=net", "-device", "virtio-net-pci,netdev=net,disable-legacy=on",
-                "-device", "virtio-rng-pci,disable-legacy=on", "-display", options.headless ? "none" : "cocoa",
+                "-device", "virtio-rng-pci,disable-legacy=on", "-display", options.headless ? "none" : "cocoa,full-screen=off",
                 "-chardev", "file,id=firmware,path=" + escaped(firmwareSerial.path), "-serial", "chardev:firmware",
                 "-chardev", "file,id=vmconsole,path=" + escaped(serial.path),
                 "-device", "virtio-serial-pci,disable-legacy=on,id=vmconsole",
