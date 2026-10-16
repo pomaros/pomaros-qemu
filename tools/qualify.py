@@ -96,6 +96,10 @@ def main():
                 if 'PC=' not in initial_registers: raise RuntimeError('QMP register read did not return CPU state')
                 (a.output / 'initial-registers.txt').write_text(initial_registers)
                 verdict['supervisor_ready_before_guest'] = True
+                if a.accel == 'hvf':
+                    for event in ('hvf_data_abort', 'hvf_insn_abort'):
+                        qmp.execute('trace-event-set-state', {'name': event, 'enable': True})
+                    verdict['hvf_abort_trace_enabled_before_guest'] = True
                 if a.lldb:
                     rows = subprocess.check_output(['ps', '-axo', 'pid=,ppid=,comm='], text=True).splitlines()
                     children = [int(fields[0]) for row in rows if len(fields := row.split(None, 2)) == 3
