@@ -49,7 +49,8 @@ def main():
     core = lock(ROOT / 'CORE.lock')
     if guest['source_revision'] != core['CORE_REVISION']:
         p.error('guest revision differs from CORE.lock')
-    qemu = a.qemu.resolve(strict=True)
+    qemu_location = a.qemu.absolute()
+    qemu = qemu_location.resolve(strict=True)
     version = subprocess.check_output([str(qemu), '--version'], text=True)
     if 'version 11.' not in version:
         p.error('this machine configuration requires QEMU 11')
@@ -65,7 +66,7 @@ def main():
         shutil.copy2(a.firmware, resources / 'edk2-aarch64-code.fd')
         subprocess.run(['python3', str(a.tools / 'tools/make-disk.py'), '--esp', str(a.esp),
                         '--work-volume', '--output', str(resources / 'System.img')], check=True)
-        (resources / 'launch.json').write_text(json.dumps({'qemu': str(qemu),
+        (resources / 'launch.json').write_text(json.dumps({'qemu': str(qemu_location),
             'firmware': 'edk2-aarch64-code.fd', 'machine': 'virt-11.0'}, indent=2) + '\n')
         info = {'CFBundleIdentifier': 'org.pomaros.qemu', 'CFBundleName': 'PomAROS QEMU',
                 'CFBundleDisplayName': 'PomAROS QEMU', 'CFBundleExecutable': 'PomAROSQEMU',

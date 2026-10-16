@@ -73,11 +73,11 @@ func run(_ options: Options) throws -> Int32 {
           let firmware = config["firmware"], config["machine"] == "virt-11.0" else {
         throw failure("Invalid or unsupported launch configuration")
     }
-    let qemu = URL(fileURLWithPath: executable)
+    let qemu = URL(fileURLWithPath: executable).resolvingSymlinksInPath()
     let efi = options.resources.appendingPathComponent(firmware)
     let seed = options.resources.appendingPathComponent("System.img")
+    guard fm.isExecutableFile(atPath: qemu.path) else { throw failure("QEMU is missing. Install QEMU 11 with Homebrew, then reopen the app.") }
     try regular(qemu); try regular(efi); try regular(seed)
-    guard fm.isExecutableFile(atPath: qemu.path) else { throw failure("QEMU is missing. Install QEMU 11 with Homebrew and rebuild the app.") }
     let version = Process(); version.executableURL = qemu; version.arguments = ["--version"]
     let versionPipe = Pipe(); version.standardOutput = versionPipe; version.standardError = versionPipe
     try version.run()

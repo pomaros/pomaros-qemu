@@ -46,6 +46,31 @@ class Launcher(unittest.TestCase):
         self.assertIn('hvf', command['arguments'])
         self.assertIn('cocoa,full-screen=off', command['arguments'])
 
+    def test_qemu_installation_alias_resolves_after_relocation(self):
+        alias = self.root / 'homebrew-qemu'
+        alias.symlink_to(self.qemu)
+        config = self.resources / 'launch.json'
+        values = json.loads(config.read_text()); values['qemu'] = str(alias)
+        config.write_text(json.dumps(values))
+        result = self.run_launcher()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['executable'], str(self.qemu))
+        replacement = self.root / 'qemu-new-cellar-version'
+        replacement.write_bytes(self.qemu.read_bytes()); replacement.chmod(0o755)
+        alias.unlink(); alias.symlink_to(replacement)
+        result = self.run_launcher()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)['executable'], str(replacement))
+
+    def test_missing_qemu_explains_installation_without_creating_profile(self):
+        config = self.resources / 'launch.json'
+        values = json.loads(config.read_text()); values['qemu'] = str(self.root / 'not-installed')
+        config.write_text(json.dumps(values))
+        result = self.run_launcher()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('Install QEMU 11 with Homebrew', result.stderr)
+        self.assertFalse(self.profile.exists())
+
     def test_profile_lock_is_exclusive(self):
         self.profile.mkdir()
         with (self.profile / 'profile.lock').open('w') as lock:
