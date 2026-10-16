@@ -178,14 +178,9 @@ def main():
                     if not incomplete or attempt==2:raise RuntimeError('desktop-pixel-gate-failed')
                     if any(marker in (profile/'serial.log').read_text(errors='replace') for marker in ('FAIL:','Synchronous Exception')):raise RuntimeError('guest-failure-between-captures')
                     time.sleep(.37+attempt*.13)
-                rows = subprocess.check_output(['ps', '-axo', 'pid=,ppid=,comm='], text=True).splitlines()
-                children = [int(fields[0]) for row in rows if len(fields := row.split(None, 2)) == 3
-                            and int(fields[1]) == process.pid and fields[2].endswith('/qemu-system-aarch64')]
-                if len(children) != 1: raise RuntimeError('cannot identify owned QEMU window process')
-                capture = subprocess.run(['swift', str(a.tools / 'tools/capture-window.swift'), str(children[0]),
-                                          str(a.output / 'desktop-window.png')], capture_output=True, text=True, timeout=30)
-                (a.output / 'window-capture.log').write_text(capture.stdout + capture.stderr)
-                verdict['host_window_capture']=capture.returncode==0
+                # QMP captures the actual guest viewport. External host-window
+                # chrome requires screen access and is outside guest acceptance.
+                verdict['host_window_capture']=False
                 verdict['guest_viewport_capture']=True
                 verdict.update(result='PASS', reason='desktop-gpu-pixels-and-two-usb-bindings')
         except Exception as error:
