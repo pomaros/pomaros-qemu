@@ -75,5 +75,7 @@ The launcher uses the versioned `virt-11.0` machine, GICv3 with GICv2m,
 virtio GPU/block/network, xHCI USB input and an EFI/virtio early console.
 Machine availability is verified locally; complete desktop behavior needs
 separate guest acceptance. `--headless --timeout 20` is an explicit bounded
-diagnostic invocation. `--inspect` records the command and prepares an isolated
+diagnostic invocation. Add `--qmp /tmp/new-short-socket` to allow an independent
+QMP supervisor to stop/inspect a diagnostic guest; the socket must be new.
+`--inspect` records the command and prepares an isolated
 profile without starting a VM.

@@ -28,19 +28,27 @@ struct Options {
     var inspect = false
     var headless = false
     var timeout: Double? = nil
+    var qmp: String? = nil
     init(_ arguments: [String]) throws {
         var i = 0
         while i < arguments.count {
             let key = arguments[i]
             if key == "--inspect" { inspect = true }
             else if key == "--headless" { headless = true }
-            else if ["--resources", "--profile", "--accel", "--timeout"].contains(key) {
+            else if ["--resources", "--profile", "--accel", "--timeout", "--qmp"].contains(key) {
                 i += 1
                 guard i < arguments.count else { throw failure("Missing value for \(key)") }
                 let value = arguments[i]
                 if key == "--resources" { resources = URL(fileURLWithPath: value, isDirectory: true) }
                 if key == "--profile" { profile = URL(fileURLWithPath: value, isDirectory: true) }
                 if key == "--accel" { accel = value }
+                if key == "--qmp" {
+                    guard value.hasPrefix("/"), value.utf8.count < 100,
+                          !FileManager.default.fileExists(atPath: value) else {
+                        throw failure("QMP requires a new absolute Unix socket path under 100 bytes")
+                    }
+                    qmp = value
+                }
                 if key == "--timeout" {
                     guard let t = Double(value), t > 0, t <= 3600, t.isFinite else { throw failure("Invalid timeout") }
                     timeout = t
@@ -114,6 +122,7 @@ func run(_ options: Options) throws -> Int32 {
                 "-chardev", "file,id=vmconsole,path=" + escaped(serial.path),
                 "-device", "virtio-serial-pci,disable-legacy=on,id=vmconsole",
                 "-device", "virtconsole,chardev=vmconsole,bus=vmconsole.0,name=aros.console", "-no-reboot"]
+    if let qmp = options.qmp { args += ["-qmp", "unix:" + escaped(qmp) + ",server=on,wait=off"] }
     if options.inspect { args += ["-S"] }
     let command: [String: Any] = ["executable": qemu.path, "arguments": args, "version": versionText,
                                  "seed": seed.path, "profile": options.profile.path]
