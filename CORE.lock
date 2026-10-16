@@ -1,6 +1,6 @@
 # Shared PomAROS source candidate; guest release qualification is pending.
 CORE_URL=https://github.com/jonx/aros-apple-core.git
-CORE_REVISION=93bfef8ed1d7e6f145ba85f778b085925a03232a
+CORE_REVISION=48e445615380448d74ec02c9958a71201ce4904c
 CORE_BRANCH=pomaros-common
 CORE_X18_POLICY=unrestricted
 CORE_TARGET=apple-aarch64
