@@ -65,6 +65,17 @@ class Launcher(unittest.TestCase):
         self.assertNotEqual(self.run_launcher().returncode, 0)
         self.assertEqual(list(other.iterdir()), [])
 
+    def test_optional_qmp_endpoint_does_not_replace_files(self):
+        import uuid
+        endpoint = '/tmp/pomaros-qmp-' + uuid.uuid4().hex
+        result = self.run_launcher('--qmp', endpoint)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        arguments = json.loads(result.stdout)['arguments']
+        self.assertIn('unix:' + endpoint + ',server=on,wait=off', arguments)
+        self.assertFalse(Path(endpoint).exists())
+        self.assertNotEqual(self.run_launcher('--qmp', str(self.qemu)).returncode, 0)
+        self.assertTrue(self.qemu.is_file())
+
     def test_no_silent_acceleration_fallback(self):
         tcg = self.run_launcher('--accel', 'tcg')
         self.assertEqual(tcg.returncode, 0, tcg.stderr)
