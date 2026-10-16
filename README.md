@@ -33,12 +33,17 @@ software emulation explicitly; the default HVF never falls back silently.
 Save personal files on `WORK:`. In full distributions the system lives on
 `WORK:System` and its preferences persist too.
 
-**Quit the guest cleanly before closing QEMU.** This backend has no VZ host
-service provider or coordinated guest flush/host quit transport yet. Closing
-the QEMU window can interrupt guest writes. Host clipboard and file exchange
-are unavailable. Networking uses QEMU user-mode NAT and virtio-net; audio is
-not configured. These are explicit limits, not claims of parity with the VM
-or hosted product's host bridge.
+**This is a development package; integrated safe shutdown is pending.** This
+backend has no VZ host service provider or guest filesystem quiesce/host quit
+transport. The platform's `C:Shutdown` power-off path has not been established.
+Closing the QEMU window, QMP quit or terminating QEMU can interrupt cached guest
+writes. Save work and keep backups of closed profiles; this package does not
+claim safe persistence across an ordinary window close. A guest-quiesce command
+and host shutdown transport are tracked in [TODO.md](TODO.md).
+
+Host clipboard and file exchange are unavailable. Networking uses QEMU
+user-mode NAT and virtio-net; audio is not configured. These are explicit
+limits, not claims of parity with the VM or hosted product's host bridge.
 
 Logs and the exact QEMU command are in the selected profile. Changing a system
 image creates a new package; existing profiles require a separate offline
