@@ -39,6 +39,8 @@ class Protocol(unittest.TestCase):
                     client.execute('unknown')
                 with self.assertRaisesRegex(RuntimeError, 'disconnected'):
                     client.execute('disconnect')
+                with self.assertRaises(OSError):
+                    client.execute('peer-already-closed')
             finally:
                 client.close(); thread.join(timeout=5)
             self.assertFalse(thread.is_alive())

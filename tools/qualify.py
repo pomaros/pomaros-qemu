@@ -34,7 +34,13 @@ class QMP:
             if 'error' in reply: raise RuntimeError(str(reply['error']))
             if 'return' in reply: return reply['return']
     def close(self):
-        self.stream.close(); self.sock.close()
+        try:
+            self.stream.close()
+        except OSError:
+            # A failed flush can leave buffered bytes after the QEMU peer aborts.
+            pass
+        finally:
+            self.sock.close()
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
@@ -98,6 +104,9 @@ def main():
                     if any(f in text for f in ('FAIL:', '[B2Q] FAIL', 'Synchronous Exception')):
                         raise RuntimeError('guest-failure')
                     if process.poll() is not None: raise RuntimeError('early-exit')
+                    host_log = profile / 'qemu.log'
+                    host_text = host_log.read_text(errors='replace') if host_log.exists() else ''
+                    if 'Assertion failed:' in host_text: raise RuntimeError('host-qemu-assertion')
                     if all(marker in text for marker in MARKERS):
                         stable_since = stable_since or time.monotonic()
                         if time.monotonic() - stable_since >= 3: break
