@@ -49,6 +49,7 @@ def main():
     p.add_argument('--tools', type=Path, default=ROOT.parent / 'pomaros-vm')
     p.add_argument('--accel', choices=('hvf', 'tcg'), default='hvf')
     p.add_argument('--timeout', type=float, default=60)
+    p.add_argument('--lldb', action='store_true', help='attach an assertion debugger before the paused guest runs')
     a = p.parse_args(); a.output = a.output.resolve(); a.app = a.app.resolve()
     if a.output.exists() or not 5 <= a.timeout <= 180:
         p.error('output must be new and timeout must be 5..180 seconds')
@@ -73,7 +74,7 @@ def main():
                'seed_sha256': hashlib.sha256(seed.read_bytes()).hexdigest(),
                'scope': 'windowed desktop/GPU/USB bindings; network, file persistence and safe shutdown not qualified',
                'supervisor_ready_before_guest': False}
-    process = None; qmp = None; started = time.monotonic()
+    process = None; qmp = None; debugger = None; debugger_log = None; started = time.monotonic()
     with tempfile.TemporaryDirectory(prefix='pq-', dir='/tmp') as scratch:
         endpoint = Path(scratch) / 'qmp.sock'
         command = [str(a.app / 'Contents/MacOS/PomAROSQEMU'), '--resources', str(resources),
@@ -95,6 +96,33 @@ def main():
                 if 'PC=' not in initial_registers: raise RuntimeError('QMP register read did not return CPU state')
                 (a.output / 'initial-registers.txt').write_text(initial_registers)
                 verdict['supervisor_ready_before_guest'] = True
+                if a.lldb:
+                    rows = subprocess.check_output(['ps', '-axo', 'pid=,ppid=,comm='], text=True).splitlines()
+                    children = [int(fields[0]) for row in rows if len(fields := row.split(None, 2)) == 3
+                                and int(fields[1]) == process.pid and fields[2].endswith('/qemu-system-aarch64')]
+                    if len(children) != 1: raise RuntimeError('cannot identify unique owned QEMU child for LLDB')
+                    commands = ['process handle SIGUSR2 -n false -p true -s false',
+                                'breakpoint set -n __assert_rtn', 'breakpoint command add 1',
+                                'thread backtrace', 'register read', 'expr unsigned long long $guestpc = 0',
+                                'expr ((int(*)(unsigned long long,unsigned int,unsigned long long*))hv_vcpu_get_reg)(0,31,&$guestpc)',
+                                'expr -f hex -- $guestpc', 'expr unsigned char $guestopcode[64] = {0}',
+                                'expr ((void(*)(unsigned long long,void*,unsigned long long))cpu_physical_memory_read)($guestpc-16,&$guestopcode,64)',
+                                'memory read -f x -s 4 -c 16 `&$guestopcode`',
+                                'disassemble -s `&$guestopcode` -c 16', 'DONE',
+                                'script print("POMAROS_DEBUGGER_READY", flush=True)', 'continue', 'process kill', 'quit']
+                    command_file = a.output / 'debugger.commands'
+                    command_file.write_text('\n'.join(commands) + '\n')
+                    debugger_log = (a.output / 'debugger.log').open('w')
+                    debugger = subprocess.Popen(['lldb', '-b', '-p', str(children[0]), '-s', str(command_file)],
+                                                stdout=debugger_log, stderr=subprocess.STDOUT, start_new_session=True)
+                    limit = time.monotonic() + 30
+                    while time.monotonic() < limit:
+                        debug_text = (a.output / 'debugger.log').read_text(errors='replace')
+                        if 'POMAROS_DEBUGGER_READY\n' in debug_text: break
+                        if debugger.poll() is not None: raise RuntimeError('LLDB attach failed before guest execution')
+                        time.sleep(.1)
+                    else: raise RuntimeError('LLDB readiness timeout before guest execution')
+                    verdict['lldb_ready_before_guest'] = True
                 qmp.execute('cont')
                 deadline = time.monotonic() + a.timeout
                 stable_since = None
@@ -107,6 +135,8 @@ def main():
                     host_log = profile / 'qemu.log'
                     host_text = host_log.read_text(errors='replace') if host_log.exists() else ''
                     if 'Assertion failed:' in host_text: raise RuntimeError('host-qemu-assertion')
+                    if a.lldb and debugger.poll() is not None:
+                        raise RuntimeError('host-debugger-stopped-target; inspect debugger.log')
                     if all(marker in text for marker in MARKERS):
                         stable_since = stable_since or time.monotonic()
                         if time.monotonic() - stable_since >= 3: break
@@ -145,6 +175,11 @@ def main():
                         except ProcessLookupError: pass
                         process.wait(timeout=3)
                 verdict['host_exit'] = process.returncode
+            if debugger is not None:
+                try: debugger.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    os.killpg(debugger.pid, signal.SIGTERM); debugger.wait(timeout=5)
+            if debugger_log is not None: debugger_log.close()
             serial = profile / 'serial.log'
             text = serial.read_text(errors='replace') if serial.exists() else ''
             verdict['markers'] = {marker: text.count(marker) for marker in MARKERS}
