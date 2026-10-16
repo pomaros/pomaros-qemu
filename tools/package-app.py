@@ -70,8 +70,8 @@ def main():
             'firmware': 'edk2-aarch64-code.fd', 'machine': 'virt-11.0'}, indent=2) + '\n')
         info = {'CFBundleIdentifier': 'org.pomaros.qemu', 'CFBundleName': 'PomAROS QEMU',
                 'CFBundleDisplayName': 'PomAROS QEMU', 'CFBundleExecutable': 'PomAROSQEMU',
-                'CFBundlePackageType': 'APPL', 'CFBundleShortVersionString': '0.1.0',
-                'CFBundleVersion': '1', 'LSMinimumSystemVersion': '13.0'}
+                'CFBundlePackageType': 'APPL', 'CFBundleShortVersionString': '0.1.1',
+                'CFBundleVersion': '2', 'LSMinimumSystemVersion': '13.0'}
         (contents / 'Info.plist').write_bytes(plistlib.dumps(info, sort_keys=True))
         shutil.copy2(ROOT / 'LICENSE', resources / 'HOST-LICENSE')
         # Firmware redistribution includes QEMU's firmware license inventory.

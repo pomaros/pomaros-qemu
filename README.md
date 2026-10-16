@@ -19,8 +19,9 @@ pass; this development package retains the shutdown limits below. See
 Install QEMU 11 (`brew install qemu`) and open `PomAROS QEMU.app`. The packaged
 application includes its guest image and EFI firmware; QEMU is an external
 installation in this first package. The app records its exact QEMU path and
-refuses a different major version. A fully bundled/notarized installer is a
-subsequent distribution step.
+refuses a different major version. Public preview DMGs use Developer ID signing and Apple notarization; QEMU
+remains an external installation. See [distribution procedure](docs/SIGNED-DISTRIBUTION.md)
+and [qualification status](docs/STATUS.md).
 
 The application starts in a normal Cocoa window with fullscreen explicitly off.
 The user can choose fullscreen afterward. The window provides the AROS display,

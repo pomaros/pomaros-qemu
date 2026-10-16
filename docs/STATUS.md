@@ -1,5 +1,9 @@
 # Qualification status
 
+## Public preview preparation
+
+Version 0.1.1 (`v0.1.1-preview.1`) packages the qualified public core below. New signed runtime, Apple tickets and corresponding-source asset inventories are prepared separately; earlier 0.1.0 DMGs remain unchanged. Optional TrueType families outside the reviewed OFL/Apache/Bitstream set are excluded, with their selectors. Public publication follows the release coordinator’s final checks.
+
 ## Public-source qualification
 
 `CORE.lock` pins public `pomaros/aros-core` revision `89db046157d415e98c05ca18316ca7ae63b07023`, shared with Hosted and VM. `TOOLS.lock` pins the reviewed VM tooling at `9bdd8d268bbb01e476542e4c8e835c340c90b5ad`. The final source was actually configured and rebuilt with frozen LLVM 20.1.0, UTC and retained release epoch `1792178266`. Boot, Wanderer and the full canonical distribution graph pass; all 44 required files exist. The package excludes VZ-only host-service commands and all eight physical Apple peripheral modules.
