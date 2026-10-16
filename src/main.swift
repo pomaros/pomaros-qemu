@@ -26,6 +26,7 @@ struct Options {
         .appendingPathComponent("Library/Application Support/PomAROS QEMU/Default", isDirectory: true)
     var accel = "hvf"
     var inspect = false
+    var startPaused = false
     var headless = false
     var timeout: Double? = nil
     var qmp: String? = nil
@@ -34,6 +35,7 @@ struct Options {
         while i < arguments.count {
             let key = arguments[i]
             if key == "--inspect" { inspect = true }
+            else if key == "--start-paused" { startPaused = true }
             else if key == "--headless" { headless = true }
             else if ["--resources", "--profile", "--accel", "--timeout", "--qmp"].contains(key) {
                 i += 1
@@ -124,7 +126,7 @@ func run(_ options: Options) throws -> Int32 {
                 "-device", "virtio-serial-pci,disable-legacy=on,id=vmconsole",
                 "-device", "virtconsole,chardev=vmconsole,bus=vmconsole.0,name=aros.console", "-no-reboot"]
     if let qmp = options.qmp { args += ["-qmp", "unix:" + escaped(qmp) + ",server=on,wait=off"] }
-    if options.inspect { args += ["-S"] }
+    if options.inspect || options.startPaused { args += ["-S"] }
     let command: [String: Any] = ["executable": qemu.path, "arguments": args, "version": versionText,
                                  "seed": seed.path, "profile": options.profile.path]
     let commandData = try JSONSerialization.data(withJSONObject: command, options: [.prettyPrinted, .sortedKeys])

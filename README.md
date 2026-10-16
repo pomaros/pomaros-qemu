@@ -88,3 +88,16 @@ diagnostic invocation. Add `--qmp /tmp/new-short-socket` to allow an independent
 QMP supervisor to stop/inspect a diagnostic guest; the socket must be new.
 `--inspect` records the command and prepares an isolated
 profile without starting a VM.
+
+A bounded WINDOWED desktop gate is available after packaging:
+
+```sh
+python3 tools/qualify.py --app '/absolute/PomAROS QEMU.app' \
+  --output /absolute/new-run --accel hvf
+```
+
+It starts the guest paused, proves QMP register access before execution, then
+checks desktop/GPU/USB bindings and the pinned Wanderer pixel gate. It saves
+CPU registers, instructions, stack and a screenshot before ending a failed run.
+Its verdict excludes network, guest filesystem persistence and safe shutdown;
+those require separate acceptance. All runs use disposable profile copies.
