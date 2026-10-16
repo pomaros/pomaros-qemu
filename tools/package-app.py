@@ -84,6 +84,8 @@ def main():
         source = Path(guest['configure_command'][0]).parent
         for name in ('LICENSE', 'LICENSE.GPL', 'LICENSE.LGPL', 'LICENSE.Author', 'LEGAL'):
             shutil.copy2(source / name, resources / ('AROS-' + name))
+        subprocess.run(['python3', str(a.tools / 'tools/package-notices.py'), '--source', str(source),
+                        '--output', str(resources / 'Licenses/libfdt')], check=True)
         hashes = {p.relative_to(resources).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                   for p in resources.rglob('*') if p.is_file()}
         (resources / 'provenance.json').write_text(json.dumps({'guest': guest, 'tools_revision': actual,
