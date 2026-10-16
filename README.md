@@ -6,8 +6,12 @@ Virtualization.framework products. Native Apple/Raspberry Pi target work
 belongs to that shared kernel source; this
 repository contains the Mac launcher and packaging only.
 
-The product is being prepared; a host build alone is not guest qualification.
-See [status and evidence](docs/STATUS.md).
+![PomAROS QEMU guest desktop in a windowed HVF session](docs/images/pomaros-qemu.png)
+
+Actual guest viewport captured through QMP from the windowed application on
+2026-10-16. The full desktop passes bounded HVF/GPU/USB-binding checks; this is
+a development package with the shutdown limits below. See
+[status and evidence](docs/STATUS.md).
 
 ## Run
 

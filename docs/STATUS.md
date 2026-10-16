@@ -1,76 +1,27 @@
 # Qualification status
 
-The PomAROS QEMU product is under preparation. The production macOS launcher
-builds and has isolated profile/command/argument admission tests. It has no
-vsock host service provider, host clipboard/file bridge or guest flush/quit
-transport. The application requires an installed QEMU 11.
+PomAROS QEMU builds and starts its full AROS desktop in a normal macOS Cocoa window using QEMU 11/HVF. It shares core pin `3c382bcf39373ac50630f5df6e961a3afb05a64b` and the pinned VM tooling with PomAROS VM. QEMU remains an external installation; the application is signed ad-hoc.
 
-The product pins shared source candidate `b027ee4ecd` in `CORE.lock`; guest
-full guest distribution builds and packages successfully; desktop acceptance is
-tracked below. The former QuickPart UUID build failure is corrected. No full desktop,
-network, persistent filesystem or shutdown stability is established by this
-repository's host tests. Physical Apple/Raspberry Pi behavior is not tested.
+## Verified on 2026-10-16
 
-Run artifacts belong in ignored `artifacts/`; test fixtures use temporary
-profiles. Do not point tests at the default personal profile.
+The complete fresh guest SDK distribution graph passes, with all required files present. The QEMU package contains 3863 runtime files, its EFI loader, guest disk, firmware and license notices. It uses frozen LLVM 20.1.0 and release epoch `1792169063`/UTC. Actual guest objects were built at `48e445615380448d74ec02c9958a71201ce4904c`; the final common pin adds a hosted-only loader correction. Standalone preprocessed loader tokens match exactly and retained source-amendment metadata records the unchanged guest artifacts.
 
-## 2026-10-16 preparation evidence
+Nine host tests pass, covering disk preservation, unusual paths, profile locking, symlink rejection, explicit acceleration, QMP endpoints, missing dependencies and desktop admission. A paused construction test admits the full device set under TCG; it executes no guest code and does not qualify a TCG desktop.
 
-The Swift launcher builds and is ad-hoc signed. Seven production-host tests
-pass: disk preservation/path encoding, exclusive profile locks, symlink refusal,
-explicit acceleration selection, protected diagnostic QMP endpoints and guest
-packaging admission. The QMP supervisor protocol also rejects errors and
-disconnection while correctly handling asynchronous events.
+The actual final windowed HVF run passes in 33.49 seconds. Independent QMP status/register access, an owned-process LLDB assertion supervisor and HVF abort tracing are ready before guest execution. Guest markers establish desktop stability, two USB HID bindings and graphics IRQ completion. The unmodified guest framebuffer passes the strict production classifier: 352 blocks match the configured wallpaper extracted from the immutable package, and the monitor matches its frame, static glyphs and blank rows. Negative controls reject black/blue alerts inside and outside the monitor, alerts over its labels, generic requesters, software alerts and a missing wallpaper.
 
-A two-second paused TCG construction run using the production command's whole
-device set passes on QEMU 11.0.1. It executes no guest code and establishes only
-machine/device option admission. Evidence is
-`artifacts/construction-smoke/result.json`; real HVF guest acceptance is pending.
-The test uses a private scratch disk, firmware and profile.
+The accepted first candidate has SHA-256 `198ef072f943b815c47539c95fc3eabf8d5d7e2a8e1297aa694852915e006cea`. It is copied unchanged to `docs/images/pomaros-qemu.png` and embedded in the README. The image is the actual guest viewport from a windowed Cocoa run, without simulated macOS chrome. Both project URLs are visible. Local evidence: `artifacts/desktop-hvf-final-3c-accepted/`. Earlier failed runs and incomplete redraw candidates retain their original verdicts and pixels.
 
+Guest logs also show a DHCP lease applied to vn0, with QEMU's NAT gateway and DNS configuration. Outbound DNS/TCP connectivity is not qualified by this desktop test. QEMU exits normally through the supervisor and the immutable seed remains unchanged; this does not establish guest filesystem flushing.
 
-The private shared source and tooling pins are reachable in their private
-origins. Their availability establishes reproducible preparation inputs rather
-than a usable persistent-data release. Closing QEMU cannot be advertised as a
-safe guest flush; the guest and host shutdown path is tracked in [TODO.md](../TODO.md).
+## Shared kernel
 
+Actual final VZ and QEMU bundle payloads are independently parsed and hash-checked. Their `kernel.resource` and `exec.library` ELF files and raw stage2 bootstrap are byte-identical. Only the `SYS` ramdisk differs, reflecting backend startup and host-service settings. The kernel ELF SHA-256 is `646c209ca0cc241d7286522df40f7cafbbcf334a20c8d6574e8d45d7463438a7`. Proof is retained in the VM tooling repository's local `artifacts/pomaros-migration/final-3c-shared-kernel-proof.json`.
 
-The shared candidate's headless core bundle has now passed real windowed
-QEMU/HVF and Virtualization.framework core ABI/DOS/FDT/timer/IRQ checks. Their
-bundle SHA-256 is identical (`6abba4b73af8c513404ff88b633498c39b2db630e3f9bbb207fb3aba734ca829`).
-The QEMU run qualifies independent QMP register access before guest execution.
-Evidence is retained in the VM tooling repository's ignored
-`artifacts/common-core-regression.json`. This establishes the common guest core
-on both engines. The fresh complete desktop application packages with 3863
-runtime files, EFI, required firmware and license materials.
+The macOS launcher uses Apple's ABI; the guest leaves x18 unrestricted. Only hosted AROS reserves it. Native Apple and future Raspberry Pi use the ordinary register policy and common source; their hardware is not tested here.
 
-## Fresh desktop evidence
+## Remaining limits
 
-The first normal-window HVF run aborts QEMU 11.0.1 inside its MMIO handler at
-`assert(isv)` after xHCI instantiation. A deliberate LLDB reproduction proves
-paused QMP access before execution, then captures guest PC `0x538604f0` with
-`hv_vcpu_get_reg` returning success on the CPU's owning thread. The final trace
-is a read at VA/IPA `0x8000014004` with ISV=0. The exact guest instruction is
-under source diagnosis; it is not inferred from the host assertion alone.
-Crash report, exact binary hash, backtrace and MMIO trace are retained in
-`artifacts/desktop-hvf/` and `artifacts/desktop-hvf-lldb/`.
+There is no guest-quiesce/host-quit transport for this backend. A QMP quit, normal process exit or window close can interrupt cached guest writes. This is a development package, not a release qualified for personal persistent data. The required shutdown path is tracked in [TODO.md](../TODO.md).
 
-One explicit TCG comparison reaches stable desktop, two USB bindings and GPU
-IRQ completion. Its screenshot shows Wanderer, Shell and the existing debug
-statistics window. The strict pixel heuristic rejects that geometry, so its
-overall verdict is FAIL rather than accepted desktop functionality. Evidence:
-`artifacts/desktop-tcg/`. No network or persistent shutdown acceptance follows
-from these tests. All runs use private scratch profiles and normal windows.
-
-The QMP supervisor's broken-pipe cleanup path has a regression test; a host
-abort now yields a final failure verdict and cleans up the app's error dialog.
-
-The follow-up capture proves the opcode directly from mapped guest RAM:
-`0xb8404d69` at guest PC `0x538604f0` is `ldr w9, [x11, #4]!`, with guest x11
-and x26 both `0x8000014000`. Successful owning-thread Hypervisor register reads
-and the MMIO trace establish this scalar writeback access. Evidence:
-`artifacts/desktop-hvf-opcode/`. A targeted core correction is pending.
-
-The production app now requires the `desktop` firmware policy with its visible PomAROS monitor; diagnostic
-`forever` packages are refused. This is tested in host admission but needs fresh
-qualification with the matching common-core Shell-hiding hook.
+Host clipboard/file services are unavailable. Actual keyboard/pointer event delivery, outbound networking, persistent write/readback across controlled restarts, audio, long-term stability and production SMP remain unqualified. There is no claim of host-bridge parity with PomAROS VM or Hosted. Tests use isolated profiles and never open a personal disk. No public upstream publication or visibility change was performed; the native repository remains empty and private.
