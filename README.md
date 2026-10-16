@@ -16,6 +16,10 @@ pass; this development package retains the shutdown limits below. See
 
 ## Run
 
+This preview requires Apple Silicon and macOS 26 or later, matching the tested
+external Homebrew QEMU 11.0.1 executable. The launcher alone targets macOS 13;
+older-host guest execution is not qualified.
+
 Install QEMU 11 (`brew install qemu`) and open `PomAROS QEMU.app`. The packaged
 application includes its guest image and EFI firmware; QEMU is an external
 installation in this first package. The app records its exact QEMU path and

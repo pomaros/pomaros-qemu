@@ -71,7 +71,7 @@ def main():
         info = {'CFBundleIdentifier': 'org.pomaros.qemu', 'CFBundleName': 'PomAROS QEMU',
                 'CFBundleDisplayName': 'PomAROS QEMU', 'CFBundleExecutable': 'PomAROSQEMU',
                 'CFBundlePackageType': 'APPL', 'CFBundleShortVersionString': '0.1.1',
-                'CFBundleVersion': '2', 'LSMinimumSystemVersion': '13.0'}
+                'CFBundleVersion': '2', 'LSMinimumSystemVersion': '26.0'}
         (contents / 'Info.plist').write_bytes(plistlib.dumps(info, sort_keys=True))
         shutil.copy2(ROOT / 'LICENSE', resources / 'HOST-LICENSE')
         # Firmware redistribution includes QEMU's firmware license inventory.

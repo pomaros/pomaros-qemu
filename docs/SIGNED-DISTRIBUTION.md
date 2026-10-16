@@ -12,7 +12,8 @@ python3 tools/distribute.py zip --distribution artifacts/signed-qemu --output ar
 
 Reserve the project's VM/QEMU resources before the bounded **windowed** check.
 The launcher is Developer ID signed with hardened runtime and no extra
-entitlements. QEMU 11 remains separately installed, with its own signature and
+entitlements. This preview declares macOS 26, matching the tested external QEMU executable.
+QEMU 11 remains separately installed, with its own signature and
 HVF entitlements; its dependency tree is not copied into this package.
 
 This is a public development preview. Guest-quiesce/host-quit,

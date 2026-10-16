@@ -2,7 +2,7 @@
 
 ## Public preview preparation
 
-Version 0.1.1 (`v0.1.1-preview.1`) packages the qualified public core below. New signed runtime, Apple tickets and corresponding-source asset inventories are prepared separately; earlier 0.1.0 DMGs remain unchanged. Optional TrueType families outside the reviewed OFL/Apache/Bitstream set are excluded, with their selectors. Public publication follows the release coordinator’s final checks.
+Version 0.1.1 (`v0.1.1-preview.1`) packages the qualified public core below. Its declared macOS minimum is 26.0, matching the tested external Homebrew QEMU 11.0.1 executable; the launcher itself has a 13.0 deployment target. New signed runtime, Apple tickets and corresponding-source asset inventories are prepared separately; earlier 0.1.0 DMGs remain unchanged. Optional TrueType families outside the reviewed OFL/Apache/Bitstream set are excluded, with their selectors. Public publication follows the release coordinator’s final checks.
 
 ## Public-source qualification
 
