@@ -71,6 +71,6 @@ and x26 both `0x8000014000`. Successful owning-thread Hypervisor register reads
 and the MMIO trace establish this scalar writeback access. Evidence:
 `artifacts/desktop-hvf-opcode/`. A targeted core correction is pending.
 
-The production app now requires the quiet `desktop` firmware policy; diagnostic
+The production app now requires the `desktop` firmware policy with its visible PomAROS monitor; diagnostic
 `forever` packages are refused. This is tested in host admission but needs fresh
-qualification with the matching common-core quiet hook.
+qualification with the matching common-core Shell-hiding hook.

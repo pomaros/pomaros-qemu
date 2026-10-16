@@ -14,7 +14,7 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-MARKERS = ('[KI] desktop stable', '[VM] desktop two HID bindings PASS',
+MARKERS = ('[KI] alive window open', '[KI] desktop stable', '[VM] desktop two HID bindings PASS',
            '[VM] virtio graphics IRQ completion PASS')
 
 class QMP:
@@ -144,10 +144,18 @@ def main():
                 else: raise RuntimeError('desktop-proof-timeout')
                 qmp.execute('screendump', {'filename': str(a.output / 'desktop.png'), 'format': 'png', 'device': 'gpu', 'head': 0})
                 result = subprocess.run(['python3', str(a.tools / 'tests/check-aros-render-frame.py'),
-                                         '--profile', 'wanderer-virtio', str(a.output / 'desktop.png')],
+                                         '--profile', 'wanderer-widget', '--serial-log', str(profile / 'serial.log'), str(a.output / 'desktop.png')],
                                         capture_output=True, text=True)
                 (a.output / 'pixels.log').write_text(result.stdout + result.stderr)
                 if result.returncode: raise RuntimeError('desktop-pixel-gate-failed')
+                rows = subprocess.check_output(['ps', '-axo', 'pid=,ppid=,comm='], text=True).splitlines()
+                children = [int(fields[0]) for row in rows if len(fields := row.split(None, 2)) == 3
+                            and int(fields[1]) == process.pid and fields[2].endswith('/qemu-system-aarch64')]
+                if len(children) != 1: raise RuntimeError('cannot identify owned QEMU window process')
+                capture = subprocess.run(['swift', str(a.tools / 'tools/capture-window.swift'), str(children[0]),
+                                          str(a.output / 'desktop-window.png')], capture_output=True, text=True, timeout=30)
+                (a.output / 'window-capture.log').write_text(capture.stdout + capture.stderr)
+                if capture.returncode: raise RuntimeError('owned-window-capture-failed')
                 verdict.update(result='PASS', reason='desktop-gpu-pixels-and-two-usb-bindings')
         except Exception as error:
             verdict['reason'] = str(error)
