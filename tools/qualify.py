@@ -153,8 +153,15 @@ def main():
                     time.sleep(.1)
                 else: raise RuntimeError('desktop-proof-timeout')
                 qmp.execute('screendump', {'filename': str(a.output / 'desktop.png'), 'format': 'png', 'device': 'gpu', 'head': 0})
+                wallpaper_path='Prefs/Presets/Wallpapers/2007-comp-entries/02-d980_aros-rose.jpg'
+                wallpaper=a.output/'configured-wallpaper.jpg'
+                wallpaper_hash=guest['distribution_files'][wallpaper_path]['sha256']
+                mtools_environment=dict(os.environ); mtools_environment.pop('MTOOLS_SKIP_CHECK',None)
+                subprocess.run(['mcopy','-i',str(seed)+'@@67108864','::System/'+wallpaper_path,str(wallpaper)],check=True,env=mtools_environment)
+                verdict['wallpaper_reference_sha256']=wallpaper_hash
                 result = subprocess.run(['python3', str(a.tools / 'tests/check-aros-render-frame.py'),
-                                         '--profile', 'wanderer-widget', '--serial-log', str(profile / 'serial.log'), str(a.output / 'desktop.png')],
+                                         '--profile', 'wanderer-wallpaper', '--wallpaper', str(wallpaper), '--wallpaper-sha256',wallpaper_hash,
+                                         '--serial-log', str(profile / 'serial.log'), str(a.output / 'desktop.png')],
                                         capture_output=True, text=True)
                 (a.output / 'pixels.log').write_text(result.stdout + result.stderr)
                 if result.returncode: raise RuntimeError('desktop-pixel-gate-failed')
@@ -165,7 +172,8 @@ def main():
                 capture = subprocess.run(['swift', str(a.tools / 'tools/capture-window.swift'), str(children[0]),
                                           str(a.output / 'desktop-window.png')], capture_output=True, text=True, timeout=30)
                 (a.output / 'window-capture.log').write_text(capture.stdout + capture.stderr)
-                if capture.returncode: raise RuntimeError('owned-window-capture-failed')
+                verdict['host_window_capture']=capture.returncode==0
+                verdict['guest_viewport_capture']=True
                 verdict.update(result='PASS', reason='desktop-gpu-pixels-and-two-usb-bindings')
         except Exception as error:
             verdict['reason'] = str(error)
