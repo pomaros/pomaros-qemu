@@ -15,7 +15,7 @@ import tempfile
 import time
 
 ROOT = Path(__file__).resolve().parents[1]
-MARKERS = ('[KI] alive window open', '[KI] desktop stable', '[VM] desktop two HID bindings PASS',
+MARKERS = ('[VM] CPU widget ready cores=1 online=1 samples=1', '[KI] desktop accepted', '[KI] desktop stable', '[VM] desktop two HID bindings PASS',
            '[VM] virtio graphics IRQ completion PASS')
 
 class QMP:
@@ -168,8 +168,8 @@ def main():
                     frame=a.output/('desktop-candidate-'+str(attempt+1)+'.png')
                     qmp.execute('screendump', {'filename': str(frame), 'format': 'png', 'device': 'gpu', 'head': 0})
                     shutil.copyfile(frame,a.output/'desktop.png')
-                    result = subprocess.run(['python3', str(a.tools / 'tests/check-aros-render-frame.py'),
-                                             '--profile', 'wanderer-wallpaper', '--wallpaper', str(wallpaper), '--wallpaper-sha256',wallpaper_hash,
+                    result = subprocess.run(['python3', str(a.tools / 'tests/check-cpu-widget-frame.py'),
+                                             '--wallpaper', str(wallpaper), '--wallpaper-sha256',wallpaper_hash,
                                              '--serial-log', str(profile / 'serial.log'), str(frame)],capture_output=True,text=True)
                     message=result.stdout+result.stderr
                     (a.output/('pixels-candidate-'+str(attempt+1)+'.log')).write_text(message)

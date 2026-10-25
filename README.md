@@ -117,7 +117,8 @@ python3 tools/qualify.py --app '/absolute/PomAROS QEMU.app' \
 ```
 
 It starts the guest paused, proves QMP register access before execution, then
-checks desktop/GPU/USB bindings and the pinned Wanderer pixel gate. It saves
+checks desktop/GPU/USB bindings, live UP CPU sampling and the pinned
+user-space CPUWidget/backdrop pixel gate. It saves
 CPU registers, instructions, stack and a screenshot before ending a failed run.
 With `--lldb`, it attaches to the owned QEMU child before execution and captures
 the guest instruction through Hypervisor registers and physical memory if QEMU

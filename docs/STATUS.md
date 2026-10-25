@@ -2,6 +2,14 @@
 
 ## Common-core consolidation candidate
 
+The complete fc028f product build/package passes. Its first independent QMP/LLDB
+windowed run reaches accepted desktop, graphics completion and two HID bindings,
+but remains FAIL: an obsolete kernel-widget marker is absent and CPUWidget
+samples are unavailable. VM tools 6495dec correct the accounting clock origin
+and introduce a separate strict user-space-widget oracle, passing offline
+against the actual retained frame and eleven negative controls. A freshly
+packaged runtime must confirm live sample readiness; no old run is relabeled.
+
 The source pin selects the consolidated shared core at
 `fc028f515e0d8b530b1da58ac036187c5ff133ed`; packaging tools select the reviewed
 VM capacity merge at `dead213`. Fresh configuration passes using the existing
