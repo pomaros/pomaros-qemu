@@ -2,8 +2,8 @@
 
 AROS ARM64 on Apple Silicon Macs using QEMU and hardware acceleration (HVF).
 This product shares the common PomAROS source revision with hosted and Apple
-Virtualization.framework products. Native Apple/Raspberry Pi target work
-belongs to that shared kernel source; this
+Virtualization.framework products. Generic OS work belongs to the shared core. Physical Apple hardware sources
+are maintained separately and excluded from this public product. This
 repository contains the Mac launcher and packaging only.
 
 ![PomAROS QEMU guest desktop in a windowed HVF session](docs/images/pomaros-qemu.png)

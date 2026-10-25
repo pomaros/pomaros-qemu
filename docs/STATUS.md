@@ -1,5 +1,14 @@
 # Qualification status
 
+## Common-core consolidation candidate
+
+The source pin selects the consolidated shared core at
+`fc028f515e0d8b530b1da58ac036187c5ff133ed`; packaging tools select the reviewed
+VM capacity merge at `dead213`. Fresh configuration passes using the existing
+cross toolchain and the project build environment. The earlier attempt without
+PyYAML failed and is retained. Complete compilation and guest runtime checks
+are pending; the archived public-preview results below do not qualify this pin.
+
 ## Public preview preparation
 
 Version 0.1.1 (`v0.1.1-preview.1`) packages the qualified public core below. Its declared macOS minimum is 26.0, matching the tested external Homebrew QEMU 11.0.1 executable; the launcher itself has a 13.0 deployment target. New signed runtime, Apple tickets and corresponding-source asset inventories are prepared separately; earlier 0.1.0 DMGs remain unchanged. Optional TrueType families outside the reviewed OFL/Apache/Bitstream set are excluded, with their selectors. Public publication follows the release coordinator’s final checks.
