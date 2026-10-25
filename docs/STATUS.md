@@ -1,6 +1,16 @@
 # Qualification status
 
-## Common-core consolidation candidate
+## Clean common-core reference candidate
+
+CORE.lock selects common main `61510f3cb1e28071a9f8d962f42b4135ad275412`
+and TOOLS.lock selects VM tools `bcf41a2`. Final export build/runtime checks
+are pending. The pre-export fc028f desktop passes in 20.96 seconds with QMP and
+LLDB ready before execution, unique valid UP CPU samples, GPU/USB markers,
+620 wallpaper blocks and eleven negative pixel controls; the seed is unchanged
+and QEMU exits normally. Evidence: `artifacts/consolidation-cpu-widget-desktop/`.
+That result does not qualify a different source pin.
+
+## Pre-export consolidation qualification
 
 The complete fc028f product build/package passes. Its first independent QMP/LLDB
 windowed run reaches accepted desktop, graphics completion and two HID bindings,
