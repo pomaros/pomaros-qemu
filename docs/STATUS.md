@@ -2,13 +2,17 @@
 
 ## Shared guest build tools
 
-TOOLS.lock selects `ec1ce95f1c6e62bfd1983ba15fb9ee8eb665f1cf`. The shared source-bound build driver and distribution
+TOOLS.lock selects `5b09b8cc6776d762fe001ef77dfced93d167fb8d`. The shared source-bound build driver and distribution
 builder require GNU make 4 and preserve it across nested named make calls.
 Actual response-file generation passes with a misleading old make earlier in
 PATH; old/missing overrides and cleanup failures are covered. Eight backend
 packaging tests and the source-pin test pass. The previous direct generated-file
 build helper is removed in favor of the verified driver.
-These tool changes do not relabel retained OS images or qualify SMP runtime.
+The shared runner also supports guest LLDB before execution, short QMP socket
+paths and package-declared USB hardware, and refuses incompatible ESP/WORK
+profiles. Its bounded two-core TCG Exec gate passes in 27.58 seconds in the
+shared product's `artifacts/consolidation-shared-smp-handoff/`. This does not
+relabel retained QEMU images, promote CORE.lock or qualify Apple hardware.
 
 ## Aligned common-core qualification
 
