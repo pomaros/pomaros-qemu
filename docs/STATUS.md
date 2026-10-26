@@ -2,7 +2,7 @@
 
 ## Shared guest build tools
 
-TOOLS.lock selects `5b09b8cc6776d762fe001ef77dfced93d167fb8d`. The shared source-bound build driver and distribution
+TOOLS.lock selects `ad74a1de3634a82907c857ae27a77047aa869211`. The shared source-bound build driver and distribution
 builder require GNU make 4 and preserve it across nested named make calls.
 Actual response-file generation passes with a misleading old make earlier in
 PATH; old/missing overrides and cleanup failures are covered. Eight backend
