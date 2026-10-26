@@ -88,6 +88,14 @@ make test
 python3 tools/build.py
 ```
 
+The runtime contract probes can be built with
+`python3 tools/build-runtime-probes.py --build /absolute/configured/guest-build --toolchain /absolute/aros-crosstools --output artifacts/new-probes`.
+The SDK, compiler, sources and key link-library hashes are recorded. Execute the
+binaries in an isolated guest: `PthreadFirstUse` checks shared static first use,
+recursive/error-check behavior and the Exec publication API; `RenameReplace`
+checks native replacement, unchanged destination after failure and same-path
+rename. These are guest tests, not proof of physical SMP or persistence.
+
 For an isolated candidate, configure against an explicit experimental source lock
 and pass the same file to `tools/package-app.py --core-lock PATH`. Packaging
 checks the candidate revision and guest target/register ABI and records the
