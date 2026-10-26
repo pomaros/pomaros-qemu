@@ -1,14 +1,26 @@
 # Qualification status
 
-## Clean common-core reference candidate
+## Aligned common-core qualification
 
-CORE.lock selects common main `61510f3cb1e28071a9f8d962f42b4135ad275412`
-and TOOLS.lock selects VM tools `bcf41a2`. Final export build/runtime checks
-are pending. The pre-export fc028f desktop passes in 20.96 seconds with QMP and
-LLDB ready before execution, unique valid UP CPU samples, GPU/USB markers,
-620 wallpaper blocks and eleven negative pixel controls; the seed is unchanged
-and QEMU exits normally. Evidence: `artifacts/consolidation-cpu-widget-desktop/`.
-That result does not qualify a different source pin.
+CORE.lock selects common main `afc0dbeefa12d65030ec0db8cd152a5518531913`.
+The complete local product build and corrected default distribution pass.
+The default distribution requires fd.library; its absence previously allowed
+a desktop boot while native sockets refused with ENOSYS.
+
+The corrected image passes the independent QMP/LLDB desktop gate in 20.71
+seconds: unique valid UP CPU samples, GPU completion, two USB HID bindings,
+strict wallpaper/widget pixels, unchanged seed and normal launcher exit.
+Evidence: `artifacts/consolidation-descriptor-desktop/verdict.json`.
+The same image passes the common Rust poll probe's six cases in 18.2 seconds
+under TCG with a guest debugger attached before execution. That covers UDP,
+invalid descriptors, real deadlines, stream hangup, pending-error preservation
+and explicit refusal for pipe polling. It does not qualify general pipe
+readiness, physical GPU hardware, applications or safe persistent shutdown.
+
+The tested shared packaging implementation is c37e211. TOOLS.lock also includes
+its documentation-only qualification update; executable tool sources are
+unchanged by that update. The prior product and its verdict retain their exact
+builder/source identities; they are not relabelled as another run.
 
 ## Pre-export consolidation qualification
 
