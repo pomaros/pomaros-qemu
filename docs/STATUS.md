@@ -17,10 +17,12 @@ invalid descriptors, real deadlines, stream hangup, pending-error preservation
 and explicit refusal for pipe polling. It does not qualify general pipe
 readiness, physical GPU hardware, applications or safe persistent shutdown.
 
-The tested shared packaging implementation is c37e211. TOOLS.lock also includes
-its documentation-only qualification update; executable tool sources are
-unchanged by that update. The prior product and its verdict retain their exact
-builder/source identities; they are not relabelled as another run.
+The tested shared packaging implementation is c37e211. TOOLS.lock selects
+525ae470c534a2c8fdf28381b6706c476b7de3b7, which also corrects the VZ
+production CPU-widget readiness check and requires a captured nonblank guest
+viewport. Its desktop-contract tests pass. These VZ verifier changes do not
+replace QEMU's pixel-exact desktop oracle or constitute another QEMU run.
+The retained QEMU product and verdict keep their exact builder/source identities.
 
 ## Pre-export consolidation qualification
 
