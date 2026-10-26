@@ -90,7 +90,9 @@ python3 tools/build.py
 
 The runtime contract probes can be built with
 `python3 tools/build-runtime-probes.py --build /absolute/configured/guest-build --toolchain /absolute/aros-crosstools --output artifacts/new-probes`.
-The SDK, compiler, sources and key link-library hashes are recorded. Execute the
+The SDK, compiler, sources and key link-library hashes are recorded. An SDK
+marked `DEVELOPMENT-DELTA.json` after experimental module rebuilding is refused;
+use a fresh coherent SDK for reference probes. Execute the
 binaries in an isolated guest: `PthreadFirstUse` checks shared static first use,
 recursive/error-check behavior and the Exec publication API; `RenameReplace`
 checks native replacement, unchanged destination after failure and same-path

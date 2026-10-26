@@ -19,6 +19,8 @@ def main():
     parser.add_argument('--output',type=Path,required=True)
     args=parser.parse_args()
     build=args.build.resolve(); toolchain=args.toolchain.resolve(); output=args.output.resolve()
+    if (build/'DEVELOPMENT-DELTA.json').exists():
+        parser.error('SDK contains an experimental module delta; select a fresh configured reference')
     binding=json.loads((build/'vm-build-environment.json').read_text())
     if binding['source_lock'].get('CORE_X18_POLICY')!='unrestricted' or binding['source_lock'].get('CORE_TARGET')!='apple-aarch64':
         parser.error('requires the common guest SDK target and register ABI')
