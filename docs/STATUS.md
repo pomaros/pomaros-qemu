@@ -1,5 +1,16 @@
 # Qualification status
 
+## Current common-core reference
+
+`CORE.lock` selects common core `abd400e25164736de78dbf7f8cd317ae10156fba`;
+`TOOLS.lock` selects the matching shared VM tooling. The candidate full product
+passes the TCG windowed desktop gate with QMP and LLDB before guest execution,
+strict wallpaper/widget pixels, two USB HID bindings and graphics IRQ completion
+in 23.65 seconds (`artifacts/consolidation-current-candidate-check/`). The
+immutable seed remains unchanged. A separate shared-core two-CPU Exec SMP gate
+passes. Network, file persistence, safe shutdown, real input events, application
+GPU acceleration and physical Apple behaviour are not established by this gate.
+
 ## Shared guest build tools
 
 TOOLS.lock selects `ad74a1de3634a82907c857ae27a77047aa869211`. The shared source-bound build driver and distribution
@@ -16,7 +27,7 @@ relabel retained QEMU images, promote CORE.lock or qualify Apple hardware.
 
 ## Aligned common-core qualification
 
-CORE.lock selects common main `afc0dbeefa12d65030ec0db8cd152a5518531913`.
+The preceding reference selected common main `afc0dbeefa12d65030ec0db8cd152a5518531913`.
 The complete local product build and corrected default distribution pass.
 The default distribution requires fd.library; its absence previously allowed
 a desktop boot while native sockets refused with ENOSYS.
