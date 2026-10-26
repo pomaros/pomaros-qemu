@@ -1,5 +1,15 @@
 # Qualification status
 
+## Shared guest build tools
+
+TOOLS.lock selects `ec1ce95f1c6e62bfd1983ba15fb9ee8eb665f1cf`. The shared source-bound build driver and distribution
+builder require GNU make 4 and preserve it across nested named make calls.
+Actual response-file generation passes with a misleading old make earlier in
+PATH; old/missing overrides and cleanup failures are covered. Eight backend
+packaging tests and the source-pin test pass. The previous direct generated-file
+build helper is removed in favor of the verified driver.
+These tool changes do not relabel retained OS images or qualify SMP runtime.
+
 ## Aligned common-core qualification
 
 CORE.lock selects common main `afc0dbeefa12d65030ec0db8cd152a5518531913`.
@@ -17,8 +27,8 @@ invalid descriptors, real deadlines, stream hangup, pending-error preservation
 and explicit refusal for pipe polling. It does not qualify general pipe
 readiness, physical GPU hardware, applications or safe persistent shutdown.
 
-The tested shared packaging implementation is c37e211. TOOLS.lock selects
-525ae470c534a2c8fdf28381b6706c476b7de3b7, which also corrects the VZ
+The retained image used shared packaging implementation c37e211. Its later
+verifier cohort was 525ae470c534a2c8fdf28381b6706c476b7de3b7, which corrects the VZ
 production CPU-widget readiness check and requires a captured nonblank guest
 viewport. Its desktop-contract tests pass. These VZ verifier changes do not
 replace QEMU's pixel-exact desktop oracle or constitute another QEMU run.
