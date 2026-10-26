@@ -32,6 +32,8 @@ def main():
     p.add_argument('--esp', type=Path, required=True)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--tools', type=Path, default=ROOT.parent / 'pomaros-vm')
+    p.add_argument('--core-lock', type=Path, default=ROOT / 'CORE.lock',
+                   help='explicit source/ABI lock for an isolated candidate; defaults to the product pin')
     p.add_argument('--qemu', type=Path, default=Path('/opt/homebrew/bin/qemu-system-aarch64'))
     p.add_argument('--firmware', type=Path, default=Path('/opt/homebrew/share/qemu/edk2-aarch64-code.fd'))
     a = p.parse_args()
@@ -46,9 +48,11 @@ def main():
         p.error('shared tools checkout must be clean at TOOLS.lock revision')
     guest = json.loads((a.esp / 'provenance.json').read_text())
     validate_guest(guest, (a.esp / 'Startup-Sequence').read_text())
-    core = lock(ROOT / 'CORE.lock')
+    core = lock(a.core_lock)
+    if core.get('CORE_X18_POLICY') != 'unrestricted' or core.get('CORE_TARGET') != 'apple-aarch64':
+        p.error('selected source lock violates the guest target/register ABI')
     if guest['source_revision'] != core['CORE_REVISION']:
-        p.error('guest revision differs from CORE.lock')
+        p.error('guest revision differs from selected core lock')
     qemu_location = a.qemu.absolute()
     qemu = qemu_location.resolve(strict=True)
     version = subprocess.check_output([str(qemu), '--version'], text=True)
@@ -89,7 +93,7 @@ def main():
                         '--output', str(resources / 'Licenses/libfdt'), '--build', guest['build']], check=True)
         hashes = {p.relative_to(resources).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest()
                   for p in resources.rglob('*') if p.is_file()}
-        (resources / 'provenance.json').write_text(json.dumps({'guest': guest, 'tools_revision': actual,
+        (resources / 'provenance.json').write_text(json.dumps({'guest': guest, 'core_lock': core, 'tools_revision': actual,
             'qemu_version': version, 'qemu_path': str(qemu), 'qemu_bundled': False,
             'launcher_sha256': hashlib.sha256(launcher.read_bytes()).hexdigest(),
             'qemu_sha256': hashlib.sha256(qemu.read_bytes()).hexdigest(),

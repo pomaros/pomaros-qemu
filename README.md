@@ -88,6 +88,12 @@ make test
 python3 tools/build.py
 ```
 
+For an isolated candidate, configure against an explicit experimental source lock
+and pass the same file to `tools/package-app.py --core-lock PATH`. Packaging
+checks the candidate revision and guest target/register ABI and records the
+selected lock in application provenance. This does not change `CORE.lock` or
+qualify the candidate; retain the existing reference image until runtime gates pass.
+
 The build uses its own `../Build/pomaros-qemu/clean-core` directory so simultaneous
 VM and QEMU product builds cannot race a shared mutable build tree. It creates
 an isolated VM configuration, builds the common AROS runtime,
