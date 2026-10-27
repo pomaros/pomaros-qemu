@@ -2,7 +2,9 @@
 
 ## Current common-core reference
 
-`CORE.lock` selects common core `abd400e25164736de78dbf7f8cd317ae10156fba`;
+`CORE.lock` selects common core `63de2673bec7b6c1c4226a7909ec9614d5cc4a91`;
+the product is being prepared for qualification against that source. The
+retained result below belongs to core `abd400e25164736de78dbf7f8cd317ae10156fba`;
 `TOOLS.lock` selects the matching shared VM tooling. The candidate full product
 passes the TCG windowed desktop gate with QMP and LLDB before guest execution,
 strict wallpaper/widget pixels, two USB HID bindings and graphics IRQ completion
@@ -13,7 +15,7 @@ GPU acceleration and physical Apple behaviour are not established by this gate.
 
 ## Shared guest build tools
 
-TOOLS.lock selects `ad74a1de3634a82907c857ae27a77047aa869211`. The shared source-bound build driver and distribution
+TOOLS.lock selects `70d2a5622afdfac4e4e822ad0097616a3a0f836c`. The shared source-bound build driver and distribution
 builder require GNU make 4 and preserve it across nested named make calls.
 Actual response-file generation passes with a misleading old make earlier in
 PATH; old/missing overrides and cleanup failures are covered. Eight backend
@@ -127,3 +129,9 @@ These are internal development artifacts for John. No public binary download or 
 ## Public-source migration
 
 Builds acquire the curated official-history `pomaros/aros-core` fork through `CORE.lock` into the separate `../aros-core` checkout. The VM boot manifests exclude physical Apple PMGR, DART, RTKit, SPMI, SMC, PCIe, NVMe and SPI-HID drivers. `appleboot.device` remains because it supplies the VM RAM-backed system volume. The source acquisition and native-module admission checks do not establish a successful new guest build or boot. The archived runtime evidence above belongs to the unchanged earlier artifacts.
+
+The build entry point delegates payloads to the shared source-bound build driver
+and selects the shared GNU make4 helper for UEFI and host builds. It no longer
+invokes macOS's unqualified named make for guest or loader targets. A matching
+existing SDK may be consumed; source/tool pins remain mandatory and old binaries
+keep their original provenance. Full product qualification is pending.

@@ -4,9 +4,11 @@
 """Build the QEMU product using the pinned common kernel and shared packaging tools."""
 import argparse
 import json
+import os
 from pathlib import Path
 import subprocess
 import importlib.util
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('package', ROOT / 'tools/package-app.py')
@@ -34,6 +36,9 @@ def main():
         expected = git(path, 'rev-parse', revision)
         if git(path, 'rev-parse', 'HEAD') != expected or git(path, 'status', '--porcelain'):
             p.error(str(path) + ' must be clean at its pinned revision')
+    sys.path.insert(0, str(a.tools / 'tools'))
+    from host_make import select_make
+    make = select_make(os.environ)
     def run(*args):
         subprocess.run([str(x) for x in args], check=True, cwd=ROOT)
     if not a.build.exists():
@@ -42,12 +47,13 @@ def main():
     if build_identity['source_revision'] != core['CORE_REVISION']:
         p.error('configured build has a different core revision; use a new build directory')
     # Share the maintained dependency graph: no second list of AROS modules here.
-    run('make', '-C', a.build, '-j' + str(a.jobs), 'apple-wanderer-payloads')
+    run('python3', a.tools / 'tools/build-core.py', '--build', a.build,
+        '--jobs', a.jobs, 'apple-wanderer-payloads')
     run('python3', a.tools / 'tools/distribution.py', 'build', '--build', a.build, '--jobs', a.jobs)
-    run('make', '-C', a.tools / 'boot/arosboot', 'AROS_CORE_SOURCE=' + str(a.source))
+    run(make, '-C', a.tools / 'boot/arosboot', 'AROS_CORE_SOURCE=' + str(a.source))
     run('python3', a.tools / 'tools/distribution.py', 'package', '--backend', 'qemu',
         '--build', a.build, '--efi', a.tools / 'build/uefi/BOOTAA64.EFI', '--output', a.output)
-    run('make')
+    run(make)
     run('python3', ROOT / 'tools/package-app.py', '--tools', a.tools, '--esp', a.output / 'esp',
         '--output', a.output / 'PomAROS QEMU.app')
 
