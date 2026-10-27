@@ -13,6 +13,14 @@ wake/teardown scenario in29.02s. Network, file persistence, safe shutdown, real
 input events, application GPU acceleration and physical Apple behaviour are
 not established by the QEMU product gate.
 
+## Local artifact retention
+
+17 superseded generated application bundles are removed from local
+artifact runs. The core-63de2673bec reference application is retained at
+`artifacts/consolidation-reference/PomAROS QEMU.app`. Test verdicts and provenance metadata remain available;
+separate disk profiles are preserved. This cleanup does not change source
+pins, qualify a candidate or relabel an existing binary.
+
 ## Shared guest build tools
 
 TOOLS.lock selects `70d2a5622afdfac4e4e822ad0097616a3a0f836c`. The shared source-bound build driver and distribution
