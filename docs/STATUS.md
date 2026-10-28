@@ -1,6 +1,13 @@
 # Qualification status
 
-## Checked-release reference
+## Native entry metadata candidate
+
+CORE.lock selects `c8c0f2670ba2e84afed4f7703dd4cdb86a494bfc`; TOOLS.lock
+selects shared VM tooling `14d20970da09191805d5f3d67da5c6f92b562aad`. The shared complete SDK, production
+VZ and matching-SDK stage6 pass. QEMU product acceptance is pending; prior
+verdicts below retain their own identities.
+
+## Earlier checked-release reference
 
 CORE.lock selects common core `7b2453dfcb5a9584a666bf4efa60ea524785dc3c`;
 TOOLS.lock selects shared VM tools `052a4e4`. The complete shared SDK build,
