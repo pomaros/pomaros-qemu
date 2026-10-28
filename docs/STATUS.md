@@ -1,11 +1,15 @@
 # Qualification status
 
-## Native entry metadata candidate
+## Native entry metadata reference
 
 CORE.lock selects `c8c0f2670ba2e84afed4f7703dd4cdb86a494bfc`; TOOLS.lock
 selects shared VM tooling `14d20970da09191805d5f3d67da5c6f92b562aad`. The shared complete SDK, production
-VZ and matching-SDK stage6 pass. QEMU product acceptance is pending; prior
-verdicts below retain their own identities.
+VZ and matching-SDK stage6 pass. The full signed QEMU HVF product passes in20.88s with QMP/LLDB ready
+before execution, strict desktop pixels, two HID bindings and GPU IRQ; host
+exit is0 and the seed is unchanged. Evidence:
+`artifacts/consolidation-entry-metadata-reference/hvf/verdict.json`.
+Network, persistence, safe QEMU guest shutdown and application GPU acceleration
+remain outside this gate. Prior verdicts retain their own identities.
 
 ## Earlier checked-release reference
 
