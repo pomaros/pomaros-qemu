@@ -1,12 +1,15 @@
 # Qualification status
 
-## Checked-release candidate
+## Checked-release reference
 
 CORE.lock selects common core `7b2453dfcb5a9584a666bf4efa60ea524785dc3c`;
 TOOLS.lock selects shared VM tools `052a4e4`. The complete shared SDK build,
-signed VZ production and matching-SDK stage6 pass. The QEMU distribution is
-assembled from that SDK; full QEMU product acceptance is pending. Existing
-binary qualifications below retain their own source identities.
+signed VZ production and matching-SDK stage6 pass. The full signed QEMU HVF product passes in22.45s with QMP/LLDB ready before
+guest execution, strict desktop pixels, two HID bindings and GPU IRQ. Host
+exit is0 and the seed is unchanged. Evidence:
+`artifacts/consolidation-release-reference/hvf/verdict.json`. Network,
+persistence, safe shutdown and application GPU acceleration are outside this
+gate. Existing qualifications below retain their own source identities.
 
 ## Volume-removal corrected reference
 
