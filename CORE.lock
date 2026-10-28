@@ -1,6 +1,6 @@
 # Shared public AROS source; product-specific ABI policy follows.
 CORE_URL=https://github.com/pomaros/aros-core.git
-CORE_REVISION=63de2673bec7b6c1c4226a7909ec9614d5cc4a91
+CORE_REVISION=a5e081f74550b178c7680385115b17523925df8a
 CORE_BRANCH=main
 CORE_X18_POLICY=unrestricted
 CORE_TARGET=apple-aarch64

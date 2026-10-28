@@ -9,6 +9,7 @@ import os
 from pathlib import Path
 import signal
 import shutil
+import sys
 import socket
 import subprocess
 import tempfile
@@ -55,6 +56,8 @@ def main():
     a = p.parse_args(); a.output = a.output.resolve(); a.app = a.app.resolve()
     if a.output.exists() or not 5 <= a.timeout <= 180:
         p.error('output must be new and timeout must be 5..180 seconds')
+    sys.path.insert(0, str(a.tools / 'tools'))
+    from desktop_contract import require_guest_no_crash
     resources = a.app / 'Contents/Resources'
     tools_lock = dict(line.split('=', 1) for line in (ROOT / 'TOOLS.lock').read_text().splitlines()
                       if line and not line.startswith('#'))
@@ -142,6 +145,7 @@ def main():
                 while time.monotonic() < deadline:
                     serial = profile / 'serial.log'
                     text = serial.read_text(errors='replace') if serial.exists() else ''
+                    require_guest_no_crash(text)
                     if any(f in text for f in ('FAIL:', '[B2Q] FAIL', 'Synchronous Exception')):
                         raise RuntimeError('guest-failure')
                     if process.poll() is not None: raise RuntimeError('early-exit')
@@ -218,6 +222,10 @@ def main():
             if debugger_log is not None: debugger_log.close()
             serial = profile / 'serial.log'
             text = serial.read_text(errors='replace') if serial.exists() else ''
+            try: require_guest_no_crash(text)
+            except ValueError as error: verdict.update(result='FAIL', reason=str(error))
+            if verdict.get('host_exit') != 0 or verdict.get('forced_cleanup'):
+                verdict.update(result='FAIL', reason='qemu-did-not-exit-cleanly')
             verdict['markers'] = {marker: text.count(marker) for marker in MARKERS}
             verdict['seconds'] = round(time.monotonic() - started, 2)
             verdict['seed_unchanged'] = hashlib.sha256(seed.read_bytes()).hexdigest() == verdict['seed_sha256']

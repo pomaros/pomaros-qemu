@@ -1,6 +1,15 @@
 # Qualification status
 
-## Current common-core reference
+## Volume-removal correction candidate
+
+`CORE.lock` selects `a5e081f74550b178c7680385115b17523925df8a`;
+`TOOLS.lock` selects shared VM tooling `cc6fadd55a912e874952df9cbb42da40d4ed2ef0`.
+The shared fresh runtime, VZ production and matching-SDK stage6 pass, as does
+the debugger-confirmed delayed volume-removal regression under QEMU TCG.
+The full QEMU product qualification is pending. Its gate also rejects suspended
+guest task crashes through teardown and requires a clean launcher exit.
+
+## Earlier common-core reference
 
 `CORE.lock` selects common core `63de2673bec7b6c1c4226a7909ec9614d5cc4a91`;
 `TOOLS.lock` selects shared VM tooling `70d2a5622afdfac4e4e822ad0097616a3a0f836c`.
