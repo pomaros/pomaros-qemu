@@ -1,9 +1,17 @@
 # Qualification status
 
+## Checked-release candidate
+
+CORE.lock selects common core `7b2453dfcb5a9584a666bf4efa60ea524785dc3c`;
+TOOLS.lock selects shared VM tools `052a4e4`. The complete shared SDK build,
+signed VZ production and matching-SDK stage6 pass. The QEMU distribution is
+assembled from that SDK; full QEMU product acceptance is pending. Existing
+binary qualifications below retain their own source identities.
+
 ## Volume-removal corrected reference
 
-`CORE.lock` selects `a5e081f74550b178c7680385115b17523925df8a`;
-`TOOLS.lock` selects shared VM tooling `cc6fadd55a912e874952df9cbb42da40d4ed2ef0`.
+The earlier core pin selects `a5e081f74550b178c7680385115b17523925df8a`;
+The earlier tools pin selects shared VM tooling `cc6fadd55a912e874952df9cbb42da40d4ed2ef0`.
 The shared fresh runtime, VZ production and matching-SDK stage6 pass, as does
 the debugger-confirmed delayed volume-removal regression under QEMU TCG.
 The full windowed QEMU HVF product passes in22.93s with QMP/LLDB ready
@@ -16,8 +24,8 @@ Apple hardware remain outside this product gate.
 
 ## Earlier common-core reference
 
-`CORE.lock` selects common core `63de2673bec7b6c1c4226a7909ec9614d5cc4a91`;
-`TOOLS.lock` selects shared VM tooling `70d2a5622afdfac4e4e822ad0097616a3a0f836c`.
+The earlier core pin selects common core `63de2673bec7b6c1c4226a7909ec9614d5cc4a91`;
+The earlier tools pin selects shared VM tooling `70d2a5622afdfac4e4e822ad0097616a3a0f836c`.
 The complete product passes the windowed HVF desktop gate in21.49 seconds,
 with QMP and LLDB ready before guest execution, strict wallpaper/widget pixels,
 two USB HID bindings and graphics IRQ completion. The seed is unchanged.
@@ -37,7 +45,7 @@ pins, qualify a candidate or relabel an existing binary.
 
 ## Shared guest build tools
 
-TOOLS.lock selects `70d2a5622afdfac4e4e822ad0097616a3a0f836c`. The shared source-bound build driver and distribution
+The earlier tools pin selects `70d2a5622afdfac4e4e822ad0097616a3a0f836c`. The shared source-bound build driver and distribution
 builder require GNU make 4 and preserve it across nested named make calls.
 Actual response-file generation passes with a misleading old make earlier in
 PATH; old/missing overrides and cleanup failures are covered. Eight backend
