@@ -1,13 +1,18 @@
 # Qualification status
 
-## Volume-removal correction candidate
+## Volume-removal corrected reference
 
 `CORE.lock` selects `a5e081f74550b178c7680385115b17523925df8a`;
 `TOOLS.lock` selects shared VM tooling `cc6fadd55a912e874952df9cbb42da40d4ed2ef0`.
 The shared fresh runtime, VZ production and matching-SDK stage6 pass, as does
 the debugger-confirmed delayed volume-removal regression under QEMU TCG.
-The full QEMU product qualification is pending. Its gate also rejects suspended
-guest task crashes through teardown and requires a clean launcher exit.
+The full windowed QEMU HVF product passes in22.93s with QMP/LLDB ready
+before execution, exact wallpaper/widget pixels, two HID bindings and GPU IRQ.
+The seed is unchanged and host exit is0. Its gate rejects suspended guest
+task crashes through teardown and requires a clean launcher exit. Evidence:
+`artifacts/consolidation-volume-name-reference/hvf/verdict.json`.
+Network, persistent writes, graceful QEMU shutdown, semantic input and native
+Apple hardware remain outside this product gate.
 
 ## Earlier common-core reference
 
