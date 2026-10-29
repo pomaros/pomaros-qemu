@@ -4,7 +4,7 @@
 
 CORE.lock selects common core `9b25c2456d74a3970dd8c3829849a0f9064bf056`. The selected source
 contains the AArch64 long-branch and synchronous signal metadata corrections.
-TOOLS.lock selects shared VM tooling `b4ebe85c26ee89e85cf68da8468095b614c5734f`.
+TOOLS.lock selects shared VM tooling `d37ca663173ce2af4bebdb9e680a74fa30167b0a`.
 A complete shared SDK/product rebuild and QMP/LLDB qualification are pending;
 existing signed references retain their earlier source and binary identities.
 
