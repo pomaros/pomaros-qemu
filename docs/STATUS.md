@@ -2,11 +2,16 @@
 
 ## Selected source cohort
 
-CORE.lock selects common core `9b25c2456d74a3970dd8c3829849a0f9064bf056`. The selected source
-contains the AArch64 long-branch and synchronous signal metadata corrections.
-TOOLS.lock selects shared VM tooling `d37ca663173ce2af4bebdb9e680a74fa30167b0a`.
-A complete shared SDK/product rebuild and QMP/LLDB qualification are pending;
-existing signed references retain their earlier source and binary identities.
+CORE.lock selects common core `9b25c2456d74a3970dd8c3829849a0f9064bf056`, including
+bounded AArch64 loader veneers and synchronous signal metadata. The same fresh
+public SDK used by VM supplies this backend; its complete build passes853.82s.
+The signed QEMU product passes windowed HVF desktop pixels, live CPU sampling,
+two HID bindings and GPU IRQ completion in22.61s. QMP and LLDB are ready before
+guest execution; host exit0 and unchanged seed are required. Evidence:
+`artifacts/consolidation-common-reference/hvf/verdict.json`.
+The tested package pins shared tools `d37ca663173ce2af4bebdb9e680a74fa30167b0a`.
+Network, persistence, safe shutdown and physical Apple hardware are separate.
+Earlier signed references retain their recorded source and binary identities.
 
 ## Native entry metadata reference
 
