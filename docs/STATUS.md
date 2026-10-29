@@ -1,8 +1,16 @@
 # Qualification status
 
+## Selected source cohort
+
+CORE.lock selects common core `9b25c2456d74a3970dd8c3829849a0f9064bf056`. The selected source
+contains the AArch64 long-branch and synchronous signal metadata corrections.
+TOOLS.lock selects shared VM tooling `b4ebe85c26ee89e85cf68da8468095b614c5734f`.
+A complete shared SDK/product rebuild and QMP/LLDB qualification are pending;
+existing signed references retain their earlier source and binary identities.
+
 ## Native entry metadata reference
 
-CORE.lock selects `c8c0f2670ba2e84afed4f7703dd4cdb86a494bfc`; TOOLS.lock
+This preceding reference used `c8c0f2670ba2e84afed4f7703dd4cdb86a494bfc`; TOOLS.lock
 selects shared VM tooling `14d20970da09191805d5f3d67da5c6f92b562aad`. The shared complete SDK, production
 VZ and matching-SDK stage6 pass. The full signed QEMU HVF product passes in20.88s with QMP/LLDB ready
 before execution, strict desktop pixels, two HID bindings and GPU IRQ; host
@@ -13,7 +21,7 @@ remain outside this gate. Prior verdicts retain their own identities.
 
 ## Earlier checked-release reference
 
-CORE.lock selects common core `7b2453dfcb5a9584a666bf4efa60ea524785dc3c`;
+This preceding reference used common core `7b2453dfcb5a9584a666bf4efa60ea524785dc3c`;
 TOOLS.lock selects shared VM tools `052a4e4`. The complete shared SDK build,
 signed VZ production and matching-SDK stage6 pass. The full signed QEMU HVF product passes in22.45s with QMP/LLDB ready before
 guest execution, strict desktop pixels, two HID bindings and GPU IRQ. Host
